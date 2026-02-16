@@ -24,6 +24,9 @@ const {
 } = require('../middleware/requestvalidator.middleware');
 const { protect } = require('../middleware/auth.middleware');
 
+// Import execution routes
+const executionRoutes = require('./executionRoutes');
+
 /**
  * Apply authentication middleware to all routes
  * All workflow operations require authentication
@@ -72,5 +75,11 @@ router.put('/:id', validateObjectId, validateWorkflowUpdate, updateWorkflow);
  * @access  Private
  */
 router.delete('/:id', validateObjectId, deleteWorkflow);
+
+/**
+ * Mount execution routes under /:id
+ * Handles: POST /:id/execute, GET /:id/execution/status, etc.
+ */
+router.use('/:id', executionRoutes);
 
 module.exports = router;

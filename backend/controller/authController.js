@@ -83,6 +83,8 @@ const login = asyncHandler(async (req, res) => {
       message: 'Account is deactivated. Please contact support.',
     });
   }
+  console.log("JWT_SECRET during sign:", process.env.JWT_SECRET);
+
 
   // Verify password using instance method
   const isPasswordValid = await user.comparePassword(password);
