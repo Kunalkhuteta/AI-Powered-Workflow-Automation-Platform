@@ -1,0 +1,1038 @@
+
+/**
+ * builder.css - Complete Styling for Visual Workflow Builder
+ * 
+ * Professional, clean interface for the drag-and-drop builder
+ */
+
+/* ============================================
+   LAYOUT & STRUCTURE
+   ============================================ */
+
+.workflow-builder {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: #f9fafb;
+}
+
+.builder-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.builder-canvas {
+  flex: 1;
+  position: relative;
+}
+
+/* ============================================
+   TOOLBAR
+   ============================================ */
+
+.builder-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.toolbar-left, .toolbar-right {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.workflow-name-input {
+  font-size: 16px;
+  font-weight: 600;
+  padding: 8px 12px;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  min-width: 250px;
+  transition: all 0.2s;
+}
+
+.workflow-name-input:hover {
+  border-color: #e5e7eb;
+}
+
+.workflow-name-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  background: #f9fafb;
+}
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+
+.btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-primary {
+  background: #3b82f6;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: #2563eb;
+}
+
+.btn-secondary {
+  background: #6b7280;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background: #4b5563;
+}
+
+.btn-success {
+  background: #10b981;
+  color: white;
+}
+
+.btn-success:hover {
+  background: #059669;
+}
+
+.btn-danger {
+  background: #ef4444;
+  color: white;
+}
+
+.btn-danger:hover {
+  background: #dc2626;
+}
+
+/* ============================================
+   NODE PALETTE (Sidebar)
+   ============================================ */
+
+.node-palette {
+  width: 260px;
+  background: white;
+  border-right: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.palette-header {
+  padding: 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.palette-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #111827;
+}
+
+.palette-subtitle {
+  margin: 4px 0 0 0;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.palette-nodes {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.palette-node {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  cursor: grab;
+  transition: all 0.2s;
+}
+
+.palette-node:hover {
+  background: #f9fafb;
+  border-color: #d1d5db;
+  transform: translateX(4px);
+}
+
+.palette-node:active {
+  cursor: grabbing;
+  transform: scale(0.95);
+}
+
+.palette-node-icon {
+  font-size: 24px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.palette-node-content {
+  flex: 1;
+}
+
+.palette-node-label {
+  font-weight: 600;
+  font-size: 14px;
+  color: #111827;
+  margin-bottom: 2px;
+}
+
+.palette-node-description {
+  font-size: 12px;
+  color: #6b7280;
+  line-height: 1.4;
+}
+
+.palette-help {
+  margin-top: auto;
+  padding: 16px;
+  background: #f9fafb;
+  border-top: 1px solid #e5e7eb;
+}
+
+.help-item {
+  font-size: 12px;
+  color: #6b7280;
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.help-item strong {
+  color: #111827;
+}
+
+/* ============================================
+   NODE CONFIGURATION PANEL
+   ============================================ */
+
+.node-config-panel {
+  width: 360px;
+  background: white;
+  border-left: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.05);
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.panel-header h3 {
+  margin: 0;
+  font-size: 16px;
+  color: #111827;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.close-btn:hover {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.panel-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.node-info {
+  padding: 12px;
+  background: #f9fafb;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* ============================================
+   FORMS
+   ============================================ */
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group textarea,
+.form-group select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+  font-family: inherit;
+}
+
+.form-group small {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.error-text {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #ef4444;
+}
+
+.form-group input.error,
+.form-group textarea.error {
+  border-color: #ef4444;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
+  margin-top: 20px;
+}
+
+.form-actions > div {
+  display: flex;
+  gap: 8px;
+}
+
+/* ============================================
+   CUSTOM NODES (React Flow)
+   ============================================ */
+
+.custom-node {
+  min-width: 150px;
+  background: white;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s;
+}
+
+.custom-node:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.custom-node.selected {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+}
+
+.node-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border-bottom: 1px solid #e5e7eb;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.node-header span {
+  font-size: 18px;
+}
+
+.node-body {
+  padding: 10px 12px;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* Node type specific colors */
+.llm-node {
+  border-color: #3b82f6;
+}
+
+.llm-node .node-header {
+  background: #eff6ff;
+  color: #1e40af;
+}
+
+.http-node {
+  border-color: #10b981;
+}
+
+.http-node .node-header {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.logger-node {
+  border-color: #6b7280;
+}
+
+.logger-node .node-header {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+/* ============================================
+   TEMPLATES MODAL
+   ============================================ */
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  max-width: 900px;
+  width: 90%;
+  max-height: 80vh;
+  overflow: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 20px;
+  color: #111827;
+}
+
+.modal-header button {
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: #6b7280;
+  cursor: pointer;
+  padding: 0;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.modal-header button:hover {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.templates-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  padding: 24px;
+}
+
+.template-card {
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.template-card:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.template-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.template-card h3 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  color: #111827;
+}
+
+.template-card p {
+  margin: 0 0 16px 0;
+  font-size: 13px;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+/* ============================================
+   REACT FLOW OVERRIDES
+   ============================================ */
+
+.react-flow__background {
+  background-color: #fafafa;
+}
+
+.react-flow__edge-path {
+  stroke: #9ca3af;
+  stroke-width: 2px;
+}
+
+.react-flow__edge.selected .react-flow__edge-path {
+  stroke: #3b82f6;
+  stroke-width: 3px;
+}
+
+.react-flow__handle {
+  width: 12px;
+  height: 12px;
+  background: #3b82f6;
+  border: 2px solid white;
+}
+
+.react-flow__handle:hover {
+  background: #2563eb;
+  transform: scale(1.2);
+}
+
+/* ============================================
+   TOAST NOTIFICATIONS (react-hot-toast)
+   ============================================ */
+
+.react-hot-toast {
+  font-size: 14px;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 1024px) {
+  .node-palette {
+    width: 220px;
+  }
+  
+  .node-config-panel {
+    width: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+  .builder-content {
+    flex-direction: column;
+  }
+  
+  .node-palette {
+    width: 100%;
+    height: auto;
+    max-height: 200px;
+    border-right: none;
+    border-bottom: 1px solid #e5e7eb;
+  }
+  
+  .palette-nodes {
+    flex-direction: row;
+    overflow-x: auto;
+  }
+  
+  .node-config-panel {
+    width: 100%;
+    border-left: none;
+    border-top: 1px solid #e5e7eb;
+  }
+}
+
+/* ============================================
+   UTILITIES
+   ============================================ */
+
+.text-center {
+  text-align: center;
+}
+
+.mt-4 {
+  margin-top: 16px;
+}
+
+.mb-4 {
+  margin-bottom: 16px;
+}
+.conditional-node {
+  border-color: #f59e0b;
+}
+
+.conditional-node .node-header {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.transform-node {
+  border-color: #8b5cf6;
+}
+
+.transform-node .node-header {
+  background: #ede9fe;
+  color: #5b21b6;
+}
+
+/**
+ * BUILDER.CSS - React Flow Canvas Theming
+ * Canvas switches theme, nodes stay light
+ */
+
+.workflow-builder {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: var(--bg-secondary);
+}
+
+.builder-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* BUILDER CANVAS - THEMED */
+.builder-canvas {
+  flex: 1;
+  position: relative;
+  background: var(--reactflow-bg);
+}
+
+/* REACT FLOW THEMING */
+.react-flow {
+  background: var(--reactflow-bg) !important;
+}
+
+/* Background Grid - Changes with theme */
+.react-flow__background {
+  background: var(--reactflow-bg) !important;
+}
+
+.react-flow__background-pattern {
+  stroke: var(--reactflow-grid) !important;
+  stroke-width: 1;
+}
+
+/* Edges - Visible in both themes */
+.react-flow__edge-path {
+  stroke: var(--border-secondary) !important;
+  stroke-width: 2;
+}
+
+.react-flow__edge.selected .react-flow__edge-path {
+  stroke: var(--primary-500) !important;
+  stroke-width: 3;
+}
+
+.react-flow__edge:hover .react-flow__edge-path {
+  stroke: var(--primary-400) !important;
+}
+
+/* Edge Labels */
+.react-flow__edge-text {
+  fill: var(--text-primary);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.react-flow__edge-textbg {
+  fill: var(--bg-primary);
+}
+
+/* Controls - Themed */
+.react-flow__controls {
+  background: var(--bg-primary) !important;
+  border: 2px solid var(--border-primary) !important;
+  border-radius: 8px !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+.react-flow__controls-button {
+  background: var(--bg-primary) !important;
+  border-bottom: 1px solid var(--border-primary) !important;
+  color: var(--text-primary) !important;
+}
+
+.react-flow__controls-button:hover {
+  background: var(--bg-hover) !important;
+}
+
+.react-flow__controls-button svg {
+  fill: var(--text-primary) !important;
+}
+
+/* MiniMap - Themed */
+.react-flow__minimap {
+  background: var(--bg-primary) !important;
+  border: 2px solid var(--border-primary) !important;
+  border-radius: 8px !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+.react-flow__minimap-mask {
+  fill: var(--primary-500) !important;
+  fill-opacity: 0.2;
+}
+
+.react-flow__minimap-node {
+  fill: var(--bg-tertiary) !important;
+  stroke: var(--border-secondary) !important;
+}
+
+/* Selection Box */
+.react-flow__selection {
+  background: rgba(59, 130, 246, 0.1) !important;
+  border: 2px solid var(--primary-500) !important;
+}
+
+/* Node Selection Indicator */
+.react-flow__node.selected {
+  outline: none !important;
+}
+
+/* Pane - Canvas area */
+.react-flow__pane {
+  cursor: grab;
+}
+
+.react-flow__pane:active {
+  cursor: grabbing;
+}
+
+/* Attribution - Styled */
+.react-flow__attribution {
+  background: var(--bg-primary) !important;
+  color: var(--text-tertiary) !important;
+  border: 1px solid var(--border-primary) !important;
+  border-radius: 4px !important;
+  padding: 2px 6px !important;
+  font-size: 10px !important;
+}
+
+/* MODAL OVERLAY */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: fadeIn 0.2s;
+}
+
+[data-theme="dark"] .modal-overlay {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-content {
+  background: var(--bg-primary);
+  border-radius: 16px;
+  box-shadow: var(--shadow-xl);
+  max-width: 900px;
+  width: 90%;
+  max-height: 85vh;
+  overflow: hidden;
+  animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* MODAL HEADER */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px 32px;
+  border-bottom: 2px solid var(--border-primary);
+  background: var(--bg-secondary);
+}
+
+.modal-header h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.modal-header button {
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: var(--bg-tertiary);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  font-size: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-header button:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+  transform: rotate(90deg);
+}
+
+/* TEMPLATES GRID */
+.templates-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  padding: 32px;
+  max-height: calc(85vh - 100px);
+  overflow-y: auto;
+}
+
+.template-card {
+  background: var(--bg-primary);
+  border: 2px solid var(--border-primary);
+  border-radius: 12px;
+  padding: 24px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.template-card:hover {
+  border-color: var(--primary-500);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.template-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.template-card h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+}
+
+.template-card p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.template-card .btn {
+  width: 100%;
+  padding: 12px;
+  background: var(--primary-500);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.template-card .btn:hover {
+  background: var(--primary-600);
+  transform: translateY(-1px);
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+  .builder-canvas {
+    height: calc(100vh - 120px);
+  }
+  
+  .templates-grid {
+    grid-template-columns: 1fr;
+    padding: 20px;
+  }
+  
+  .modal-content {
+    width: 95%;
+    margin: 20px;
+  }
+  
+  .modal-header {
+    padding: 16px 20px;
+  }
+}
+
+/* Google Sheets Node */
+.sheets-node {
+  border-color: #0f9d58;
+  background: #e6f4ea !important;
+}
+
+.sheets-icon {
+  background: linear-gradient(135deg, #c8e6c9, #a5d6a7);
+  color: #2e7d32;
+}
+
+/* CSV/Excel Node */
+.csv-excel-node {
+  border-color: #1e88e5;
+  background: #e3f2fd !important;
+}
+
+.csv-excel-icon {
+  background: linear-gradient(135deg, #bbdefb, #90caf9);
+  color: #1565c0;
+}
+/* Email Node */
+.email-node {
+  border-color: #ea4335;
+  background: #fef2f2 !important;
+}
+
+.email-icon {
+  background: linear-gradient(135deg, #fee2e2, #fecaca);
+  color: #dc2626;
+}
+
+/* Slack Node */
+.slack-node {
+  border-color: #4A154B;
+  background: #faf5ff !important;
+}
+
+.slack-icon {
+  background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+  color: #4A154B;
+}
+
+/* SMS Node */
+.sms-node {
+  border-color: #059669;
+  background: #ecfdf5 !important;
+}
+
+.sms-icon {
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+  color: #047857;
+}

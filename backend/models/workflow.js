@@ -1,11 +1,9 @@
 /**
- * Workflow Model
- * Responsibility: Defines AI workflow structure and relationships
- * - References User model (relational data)
- * - Stores workflow nodes and edges (AI automation graph)
- * - Validates required fields
- * - Automatic timestamps for tracking
- * - Indexes for query performance
+ * Workflow Model - UPDATED with Conditional Branching Support
+ * 
+ * Changes:
+ * - Added 'label' field to edges for conditional branches
+ * - Backward compatible with existing workflows
  */
 
 const mongoose = require('mongoose');
@@ -14,9 +12,9 @@ const workflowSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User', // Reference to User model
+      ref: 'User',
       required: [true, 'Workflow must belong to a user'],
-      index: true, // Index for faster queries by userId
+      index: true,
     },
     name: {
       type: String,
@@ -32,22 +30,39 @@ const workflowSchema = new mongoose.Schema(
       default: '',
     },
     nodes: {
-      type: [mongoose.Schema.Types.Mixed], // Array of node objects
+      type: [mongoose.Schema.Types.Mixed],
       default: [],
       validate: {
         validator: function (nodes) {
-          // Ensure nodes is an array
           return Array.isArray(nodes);
         },
         message: 'Nodes must be an array',
       },
     },
     edges: {
-      type: [mongoose.Schema.Types.Mixed], // Array of edge objects (connections)
+      type: [{
+        source: {
+          type: String,
+          required: true
+        },
+        target: {
+          type: String,
+          required: true
+        },
+        // NEW: Label for conditional branches
+        label: {
+          type: String,
+          enum: ['true', 'false', 'default', ''],
+          default: 'default'
+        },
+        // Optional React Flow fields
+        id: String,
+        sourceHandle: String,
+        targetHandle: String,
+      }],
       default: [],
       validate: {
         validator: function (edges) {
-          // Ensure edges is an array
           return Array.isArray(edges);
         },
         message: 'Edges must be an array',
@@ -60,7 +75,7 @@ const workflowSchema = new mongoose.Schema(
     },
     isPublic: {
       type: Boolean,
-      default: false, // Private by default
+      default: false,
     },
     tags: {
       type: [String],
@@ -76,69 +91,54 @@ const workflowSchema = new mongoose.Schema(
     },
   },
   {
-    timestamps: true, // Adds createdAt and updatedAt automatically
-    toJSON: { virtuals: true }, // Include virtuals when converting to JSON
+    timestamps: true,
+    toJSON: { virtuals: true },
     toObject: { virtuals: true },
   }
 );
 
-/**
- * Compound Index
- * Optimize queries that filter by userId and status together
- * Common query pattern: Find all active workflows for a user
- */
+// Indexes
 workflowSchema.index({ userId: 1, status: 1 });
-
-/**
- * Text Index
- * Enable full-text search on name and description
- */
 workflowSchema.index({ name: 'text', description: 'text' });
 
-/**
- * Virtual: nodeCount
- * Calculate number of nodes without storing in DB
- */
+// Virtuals
 workflowSchema.virtual('nodeCount').get(function () {
   return this.nodes ? this.nodes.length : 0;
 });
 
-/**
- * Virtual: edgeCount
- * Calculate number of edges without storing in DB
- */
 workflowSchema.virtual('edgeCount').get(function () {
   return this.edges ? this.edges.length : 0;
 });
 
-/**
- * Pre-save Middleware
- * Update version number on modifications (for tracking changes)
- */
+// Pre-save Middleware
 workflowSchema.pre('save', function (next) {
-  if (!this.isNew && this.isModified('nodes') || this.isModified('edges')) {
+  if (!this.isNew && (this.isModified('nodes') || this.isModified('edges'))) {
     this.version += 1;
   }
   next();
 });
 
-/**
- * Static Method: Find user's workflows
- * @param {ObjectId} userId - User's ID
- * @param {Object} filters - Additional filters
- * @returns {Array} - User's workflows
- */
+// Static Methods
 workflowSchema.statics.findByUserId = function (userId, filters = {}) {
   return this.find({ userId, ...filters }).sort({ updatedAt: -1 });
 };
 
-/**
- * Instance Method: Check if user owns this workflow
- * @param {ObjectId} userId - User's ID to check
- * @returns {Boolean} - True if user owns workflow
- */
+// Instance Methods
 workflowSchema.methods.isOwner = function (userId) {
   return this.userId.toString() === userId.toString();
+};
+
+/**
+ * NEW: Get conditional edges for a node
+ * Returns edges grouped by label (true/false/default)
+ */
+workflowSchema.methods.getConditionalEdges = function (nodeId) {
+  const edges = this.edges.filter(e => e.source === nodeId);
+  return {
+    true: edges.filter(e => e.label === 'true'),
+    false: edges.filter(e => e.label === 'false'),
+    default: edges.filter(e => !e.label || e.label === 'default' || e.label === '')
+  };
 };
 
 module.exports = mongoose.model('Workflow', workflowSchema);

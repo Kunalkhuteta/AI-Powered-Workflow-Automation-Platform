@@ -1,0 +1,310 @@
+/**
+ * Professional Node Styles - n8n Inspired
+ * Modern, clean, with glassmorphism and smooth animations
+ */
+
+/* Base Node Styles */
+.pro-node {
+  min-width: 240px;
+  background: var(--bg-primary);
+  border: 2px solid var(--border-primary);
+  border-radius: 12px;
+  padding: 0;
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.pro-node::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--primary-500), var(--primary-600));
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.pro-node:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--border-focus);
+}
+
+.pro-node.selected {
+  border-color: var(--primary-500);
+  box-shadow: 0 0 0 3px var(--primary-100), var(--shadow-lg);
+}
+
+.pro-node.selected::before {
+  opacity: 1;
+}
+
+[data-theme="dark"] .pro-node.selected {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3), var(--shadow-lg);
+}
+
+/* Node Icon */
+.node-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 12px;
+  float: left;
+  backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+}
+
+.node-icon::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0));
+  border-radius: 10px;
+}
+
+/* Node Type Specific Icons */
+.llm-icon {
+  background: linear-gradient(135deg, var(--node-llm-bg), var(--primary-100));
+  color: var(--node-llm-text);
+}
+
+.http-icon {
+  background: linear-gradient(135deg, var(--node-http-bg), var(--success-100));
+  color: var(--node-http-text);
+}
+
+.logger-icon {
+  background: linear-gradient(135deg, var(--node-logger-bg), var(--bg-tertiary));
+  color: var(--node-logger-text);
+}
+
+.conditional-icon {
+  background: linear-gradient(135deg, var(--node-conditional-bg), var(--warning-100));
+  color: var(--node-conditional-text);
+}
+
+.transform-icon {
+  background: linear-gradient(135deg, var(--node-transform-bg), var(--purple-100));
+  color: var(--node-transform-text);
+}
+
+/* Node Content */
+.node-content {
+  padding: 12px;
+  padding-left: 64px;
+  min-height: 64px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.node-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  letter-spacing: -0.01em;
+}
+
+.node-subtitle {
+  font-size: 12px;
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 160px;
+}
+
+/* Node Badge */
+.node-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 4px 8px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-primary);
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.badge-info { background: var(--primary-50); color: var(--primary-700); border-color: var(--primary-200); }
+.badge-success { background: var(--success-50); color: var(--success-700); border-color: var(--success-200); }
+.badge-warning { background: var(--warning-50); color: var(--warning-700); border-color: var(--warning-200); }
+.badge-error { background: var(--error-50); color: var(--error-700); border-color: var(--error-200); }
+.badge-purple { background: var(--purple-50); color: var(--purple-700); border-color: var(--purple-200); }
+
+[data-theme="dark"] .node-badge {
+  background: var(--bg-tertiary);
+  border-color: var(--border-secondary);
+}
+
+/* Node Handles */
+.node-handle {
+  width: 12px;
+  height: 12px;
+  background: var(--bg-primary);
+  border: 2px solid var(--primary-500);
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.node-handle:hover {
+  width: 16px;
+  height: 16px;
+  border-width: 3px;
+  box-shadow: 0 0 0 4px var(--primary-100);
+}
+
+[data-theme="dark"] .node-handle:hover {
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
+}
+
+.node-handle-target {
+  top: -6px;
+}
+
+.node-handle-source {
+  bottom: -6px;
+}
+
+/* Conditional Node Specific */
+.conditional-branches {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 12px;
+  background: var(--bg-secondary);
+  border-top: 1px solid var(--border-primary);
+  gap: 8px;
+}
+
+.branch-label {
+  flex: 1;
+  text-align: center;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 6px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.branch-true {
+  background: var(--success-50);
+  color: var(--success-700);
+}
+
+.branch-false {
+  background: var(--error-50);
+  color: var(--error-700);
+}
+
+[data-theme="dark"] .branch-true {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--success-400);
+}
+
+[data-theme="dark"] .branch-false {
+  background: rgba(239, 68, 68, 0.1);
+  color: var(--error-400);
+}
+
+.branch-icon {
+  font-size: 12px;
+}
+
+.handle-true {
+  border-color: var(--success-500);
+  background: var(--success-500);
+}
+
+.handle-false {
+  border-color: var(--error-500);
+  background: var(--error-500);
+}
+
+.handle-true:hover {
+  box-shadow: 0 0 0 4px var(--success-100);
+}
+
+.handle-false:hover {
+  box-shadow: 0 0 0 4px var(--error-100);
+}
+
+/* Node Animations */
+@keyframes nodeAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.pro-node {
+  animation: nodeAppear 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .pro-node {
+    min-width: 200px;
+  }
+  
+  .node-content {
+    padding-left: 56px;
+  }
+  
+  .node-icon {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+/* Delay Node */
+.delay-node {
+  border-color: #6366f1;
+  background: #eef2ff !important;
+}
+
+.delay-icon {
+  background: linear-gradient(135deg, #ddd6fe, #c7d2fe);
+  color: #4f46e5;
+}
+
+/* Webhook Node */
+.webhook-node {
+  border-color: #06b6d4;
+  background: #ecfeff !important;
+}
+
+.webhook-icon {
+  background: linear-gradient(135deg, #cffafe, #a5f3fc);
+  color: #0e7490;
+}
+/* Database Node */
+.database-node {
+  border-color: #7c3aed;
+  background: #faf5ff !important;
+}
+
+.database-icon {
+  background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+  color: #6b21a8;
+}
