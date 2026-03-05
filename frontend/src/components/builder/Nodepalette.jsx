@@ -75,13 +75,13 @@ const NodePalette = () => {
           category: "Integration",
         },
         {
-  type: 'database',
-  label: 'Database',
-  icon: '🗄️',
-  description: 'Execute SQL queries and database operations',
-  color: '#7c3aed',
-  category: 'Data'
-}
+          type: "database",
+          label: "Database",
+          icon: "🗄️",
+          description: "Execute SQL queries and database operations",
+          color: "#7c3aed",
+          category: "Data",
+        },
       ],
     },
     {
@@ -111,6 +111,20 @@ const NodePalette = () => {
           description: "Manipulate JSON data",
           color: "#a855f7",
         },
+        {
+          type: "google_sheets",
+          label: "Google Sheets",
+          icon: "📊",
+          description: "Read/write Google Sheets",
+          color: "#0f9d58",
+        },
+        {
+          type: "csv_excel",
+          label: "CSV/Excel",
+          icon: "📄",
+          description: "Process CSV and Excel files",
+          color: "#1e88e5",
+        },
       ],
     },
     {
@@ -137,6 +151,34 @@ const NodePalette = () => {
           ),
           description: "Call external APIs",
           color: "#10b981",
+        },
+      ],
+    },
+    {
+      id: "communication",
+      label: "Communication",
+      icon: "💬",
+      nodes: [
+        {
+          type: "email",
+          label: "Email",
+          icon: "📧",
+          description: "Send emails via SMTP or SendGrid",
+          color: "#ea4335",
+        },
+        {
+          type: "slack",
+          label: "Slack",
+          icon: "💬",
+          description: "Post messages to Slack",
+          color: "#4A154B",
+        },
+        {
+          type: "sms",
+          label: "SMS",
+          icon: "📱",
+          description: "Send SMS via Twilio",
+          color: "#059669",
         },
       ],
     },

@@ -8,18 +8,18 @@ import React, { useState, useEffect } from "react";
 import "../../styles/config-panel.css";
 
 const NodeConfigPanel = ({ node, onClose, onUpdate, onDelete }) => {
-const [config, setConfig] = useState(() => ({
-  connection: {},           
-  ...node.data.config,
-}));  const [errors, setErrors] = useState({});
-
-
-useEffect(() => {
-  setConfig({
-    connection: {},         
+  const [config, setConfig] = useState(() => ({
+    connection: {},
     ...node.data.config,
-  });
-}, [node]);
+  }));
+  const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    setConfig({
+      connection: {},
+      ...node.data.config,
+    });
+  }, [node]);
   /**
    * Handle form field change
    */
@@ -903,6 +903,430 @@ LIMIT 10`}
                 {/* <li>Use {{`{{node_id.field}}`}} for dynamic values</li> */}
                 <li>Limit results to avoid memory issues</li>
               </ul>
+            </div>
+          </>
+        );
+
+      case "google_sheets":
+        return (
+          <>
+            <div className="form-group">
+              <label>Credentials (Service Account JSON)</label>
+              <textarea
+                value={
+                  typeof config.credentials === "string"
+                    ? config.credentials
+                    : JSON.stringify(config.credentials || {}, null, 2)
+                }
+                onChange={(e) => {
+                  try {
+                    handleChange("credentials", JSON.parse(e.target.value));
+                  } catch {
+                    handleChange("credentials", e.target.value);
+                  }
+                }}
+                rows={8}
+                placeholder={`{
+  "type": "service_account",
+  "project_id": "...",
+  "private_key": "...",
+  "client_email": "..."
+}`}
+              />
+              <small>Paste your Google Service Account JSON</small>
+            </div>
+
+            <div className="form-group">
+              <label>Spreadsheet ID *</label>
+              <input
+                type="text"
+                value={config.spreadsheet_id || ""}
+                onChange={(e) => handleChange("spreadsheet_id", e.target.value)}
+                placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms"
+                required
+              />
+              <small>From the Google Sheets URL</small>
+            </div>
+
+            <div className="form-group">
+              <label>Operation</label>
+              <select
+                value={config.operation || "read"}
+                onChange={(e) => handleChange("operation", e.target.value)}
+              >
+                <option value="read">Read Data</option>
+                <option value="write">Write Data</option>
+                <option value="append">Append Rows</option>
+                <option value="update">Update Cells</option>
+                <option value="clear">Clear Range</option>
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label>Range (A1 notation)</label>
+              <input
+                type="text"
+                value={config.range || "Sheet1!A1:Z100"}
+                onChange={(e) => handleChange("range", e.target.value)}
+                placeholder="Sheet1!A1:D10"
+              />
+            </div>
+
+            {(config.operation === "write" ||
+              config.operation === "append") && (
+              <div className="form-group">
+                <label>Values (JSON)</label>
+                <textarea
+                  value={JSON.stringify(config.values || [], null, 2)}
+                  onChange={(e) => {
+                    try {
+                      handleChange("values", JSON.parse(e.target.value));
+                    } catch {}
+                  }}
+                  rows={6}
+                  placeholder={`[
+  ["Name", "Email", "Status"],
+  ["{{node_1.name}}", "{{node_1.email}}", "active"]
+]`}
+                />
+                <small>Use {`{{node_id.field}}`} for dynamic values</small>
+              </div>
+            )}
+          </>
+        );
+
+      case "csv_excel":
+        return (
+          <>
+            <div className="form-group">
+              <label>Operation</label>
+              <select
+                value={config.operation || "read_csv"}
+                onChange={(e) => handleChange("operation", e.target.value)}
+              >
+                <option value="read_csv">Read CSV</option>
+                <option value="write_csv">Write CSV</option>
+                <option value="read_excel">Read Excel</option>
+                <option value="write_excel">Write Excel</option>
+              </select>
+            </div>
+
+            {(config.operation === "read_csv" ||
+              config.operation === "read_excel") && (
+              <div className="form-group">
+                <label>File Path</label>
+                <input
+                  type="text"
+                  value={config.file_path || ""}
+                  onChange={(e) => handleChange("file_path", e.target.value)}
+                  placeholder="/path/to/file.csv"
+                />
+                <small>Or provide file_content as base64</small>
+              </div>
+            )}
+
+            {(config.operation === "write_csv" ||
+              config.operation === "write_excel") && (
+              <>
+                <div className="form-group">
+                  <label>Data (JSON array)</label>
+                  <textarea
+                    value={JSON.stringify(config.data || [], null, 2)}
+                    onChange={(e) => {
+                      try {
+                        handleChange("data", JSON.parse(e.target.value));
+                      } catch {}
+                    }}
+                    rows={8}
+                    placeholder={`[
+  {"name": "Alice", "age": 30},
+  {"name": "Bob", "age": 25}
+]`}
+                  />
+                </div>
+
+                {config.operation === "write_excel" && (
+                  <div className="form-group">
+                    <label>Sheet Name</label>
+                    <input
+                      type="text"
+                      value={config.sheet_name || "Sheet1"}
+                      onChange={(e) =>
+                        handleChange("sheet_name", e.target.value)
+                      }
+                      placeholder="Sheet1"
+                    />
+                  </div>
+                )}
+              </>
+            )}
+          </>
+        );
+
+      case "email":
+        return (
+          <>
+            <div className="form-group">
+              <label>Email Provider</label>
+              <select
+                value={config.provider || "smtp"}
+                onChange={(e) => handleChange("provider", e.target.value)}
+              >
+                <option value="smtp">SMTP</option>
+                <option value="sendgrid">SendGrid</option>
+              </select>
+            </div>
+
+            {config.provider === "smtp" && (
+              <>
+                <div className="form-group">
+                  <label>SMTP Host</label>
+                  <input
+                    type="text"
+                    value={config.smtp_config?.host || ""}
+                    onChange={(e) =>
+                      handleChange("smtp_config", {
+                        ...(config.smtp_config || {}),
+                        host: e.target.value,
+                      })
+                    }
+                    placeholder="smtp.gmail.com"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>SMTP Port</label>
+                  <input
+                    type="number"
+                    value={config.smtp_config?.port || 587}
+                    onChange={(e) =>
+                      handleChange("smtp_config", {
+                        ...(config.smtp_config || {}),
+                        port: parseInt(e.target.value),
+                      })
+                    }
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Username</label>
+                  <input
+                    type="text"
+                    value={config.smtp_config?.username || ""}
+                    onChange={(e) =>
+                      handleChange("smtp_config", {
+                        ...(config.smtp_config || {}),
+                        username: e.target.value,
+                      })
+                    }
+                    placeholder="your-email@gmail.com"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Password</label>
+                  <input
+                    type="password"
+                    value={config.smtp_config?.password || ""}
+                    onChange={(e) =>
+                      handleChange("smtp_config", {
+                        ...(config.smtp_config || {}),
+                        password: e.target.value,
+                      })
+                    }
+                    placeholder="app password"
+                  />
+                </div>
+              </>
+            )}
+
+            {config.provider === "sendgrid" && (
+              <div className="form-group">
+                <label>SendGrid API Key</label>
+                <input
+                  type="password"
+                  value={config.sendgrid_api_key || ""}
+                  onChange={(e) =>
+                    handleChange("sendgrid_api_key", e.target.value)
+                  }
+                  placeholder="SG.xxxxx"
+                />
+              </div>
+            )}
+
+            <div className="form-group">
+              <label>From Email *</label>
+              <input
+                type="email"
+                value={config.from_email || ""}
+                onChange={(e) => handleChange("from_email", e.target.value)}
+                placeholder="noreply@example.com"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label>To Email *</label>
+              <input
+                type="email"
+                value={config.to || ""}
+                onChange={(e) => handleChange("to", e.target.value)}
+                placeholder="user@example.com"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Subject *</label>
+              <input
+                type="text"
+                value={config.subject || ""}
+                onChange={(e) => handleChange("subject", e.target.value)}
+                placeholder="Email Subject"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Body *</label>
+              <textarea
+                value={config.body || ""}
+                onChange={(e) => handleChange("body", e.target.value)}
+                rows={6}
+                placeholder="Email body content..."
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label>
+                <input
+                  type="checkbox"
+                  checked={config.html || false}
+                  onChange={(e) => handleChange("html", e.target.checked)}
+                />
+                HTML Email
+              </label>
+            </div>
+          </>
+        );
+
+      case "slack":
+        return (
+          <>
+            <div className="form-group">
+              <label>Bot Token *</label>
+              <input
+                type="password"
+                value={config.token || ""}
+                onChange={(e) => handleChange("token", e.target.value)}
+                placeholder="xoxb-your-bot-token"
+                required
+              />
+              <small>Slack Bot User OAuth Token</small>
+            </div>
+
+            <div className="form-group">
+              <label>Channel *</label>
+              <input
+                type="text"
+                value={config.channel || ""}
+                onChange={(e) => handleChange("channel", e.target.value)}
+                placeholder="#general or @username"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Message *</label>
+              <textarea
+                value={config.message || ""}
+                onChange={(e) => handleChange("message", e.target.value)}
+                rows={4}
+                placeholder="Your message here..."
+                required
+              />
+              <small>Supports markdown formatting</small>
+            </div>
+
+            <div className="form-group">
+              <label>Bot Username (optional)</label>
+              <input
+                type="text"
+                value={config.username || ""}
+                onChange={(e) => handleChange("username", e.target.value)}
+                placeholder="Workflow Bot"
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Icon Emoji (optional)</label>
+              <input
+                type="text"
+                value={config.icon_emoji || ""}
+                onChange={(e) => handleChange("icon_emoji", e.target.value)}
+                placeholder=":robot_face:"
+              />
+            </div>
+          </>
+        );
+
+      case "sms":
+        return (
+          <>
+            <div className="form-group">
+              <label>Twilio Account SID *</label>
+              <input
+                type="text"
+                value={config.account_sid || ""}
+                onChange={(e) => handleChange("account_sid", e.target.value)}
+                placeholder="ACxxxxxxxxxxxxx"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Twilio Auth Token *</label>
+              <input
+                type="password"
+                value={config.auth_token || ""}
+                onChange={(e) => handleChange("auth_token", e.target.value)}
+                placeholder="Auth token"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label>From Number *</label>
+              <input
+                type="tel"
+                value={config.from_number || ""}
+                onChange={(e) => handleChange("from_number", e.target.value)}
+                placeholder="+1234567890"
+                required
+              />
+              <small>Your Twilio phone number (E.164 format)</small>
+            </div>
+
+            <div className="form-group">
+              <label>To Number *</label>
+              <input
+                type="tel"
+                value={config.to || ""}
+                onChange={(e) => handleChange("to", e.target.value)}
+                placeholder="+1987654321"
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Message *</label>
+              <textarea
+                value={config.message || ""}
+                onChange={(e) => handleChange("message", e.target.value)}
+                rows={3}
+                placeholder="Your SMS message..."
+                maxLength={1600}
+                required
+              />
+              <small>Max 1600 characters</small>
             </div>
           </>
         );

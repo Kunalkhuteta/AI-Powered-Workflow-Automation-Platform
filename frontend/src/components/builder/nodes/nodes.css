@@ -308,3 +308,58 @@
   background: linear-gradient(135deg, #ede9fe, #ddd6fe);
   color: #6b21a8;
 }
+
+/* Google Sheets */
+.sheets-node {
+  border-color: #0f9d58;
+  background: #e6f4ea !important;
+}
+
+.sheets-icon {
+  background: linear-gradient(135deg, #c8e6c9, #a5d6a7);
+  color: #2e7d32;
+}
+
+/* CSV/Excel */
+.csv-excel-node {
+  border-color: #1e88e5;
+  background: #e3f2fd !important;
+}
+
+.csv-excel-icon {
+  background: linear-gradient(135deg, #bbdefb, #90caf9);
+  color: #1565c0;
+}
+
+/* Email */
+.email-node {
+  border-color: #ea4335;
+  background: #fef2f2 !important;
+}
+
+.email-icon {
+  background: linear-gradient(135deg, #fee2e2, #fecaca);
+  color: #dc2626;
+}
+
+/* Slack */
+.slack-node {
+  border-color: #4A154B;
+  background: #faf5ff !important;
+}
+
+.slack-icon {
+  background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+  color: #4A154B;
+}
+
+/* SMS */
+.sms-node {
+  border-color: #059669;
+  background: #ecfdf5 !important;
+}
+
+.sms-icon {
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+  color: #047857;
+}
