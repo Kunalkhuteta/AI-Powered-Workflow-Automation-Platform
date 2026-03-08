@@ -87,16 +87,35 @@ class GoogleSheetsTool(BaseTool):
     
     def _init_service(self, credentials_json: Any) -> None:
         """Initialize Google Sheets API service"""
-        
-        # Parse credentials
+    
+        # Check if it's a file path
         if isinstance(credentials_json, str):
-            credentials_dict = json.loads(credentials_json)
+            # Try as file path first
+            if credentials_json.endswith('.json'):
+                try:
+                    import os
+                    if os.path.exists(credentials_json):
+                        credentials = service_account.Credentials.from_service_account_file(
+                            credentials_json,
+                            scopes=['https://www.googleapis.com/auth/spreadsheets']
+                        )
+                        self.service = build('sheets', 'v4', credentials=credentials)
+                        print(f"📊 Connected to Google Sheets API (file: {credentials_json})")
+                        return
+                except Exception as e:
+                    print(f"Failed to load from file: {e}")
+            
+            # Try parsing as JSON string
+            try:
+                credentials_dict = json.loads(credentials_json)
+            except json.JSONDecodeError as e:
+                raise ValueError(f"Invalid JSON credentials: {str(e)}")
         elif isinstance(credentials_json, dict):
             credentials_dict = credentials_json
         else:
-            raise ValueError("Credentials must be JSON string or dict")
+            raise ValueError("Credentials must be JSON string, dict, or file path")
         
-        # Create credentials
+        # Create credentials from dict
         credentials = service_account.Credentials.from_service_account_info(
             credentials_dict,
             scopes=['https://www.googleapis.com/auth/spreadsheets']

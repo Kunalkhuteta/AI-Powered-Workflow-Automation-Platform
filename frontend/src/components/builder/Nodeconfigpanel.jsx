@@ -1,36 +1,46 @@
 /**
- * NodeConfigPanel.jsx - Node Configuration Form
- *
- * Allows users to edit node settings (prompt, temperature, etc.)
+ * NodeConfigPanel.jsx - FULLY EDITABLE Node Configuration Form
+ * Every field is now properly editable with better JSON handling
  */
 
 import React, { useState, useEffect } from "react";
 import "../../styles/config-panel.css";
 
 const NodeConfigPanel = ({ node, onClose, onUpdate, onDelete }) => {
-  const [config, setConfig] = useState(() => ({
-    connection: {},
-    ...node.data.config,
-  }));
+  const [config, setConfig] = useState({});
   const [errors, setErrors] = useState({});
+  const [jsonErrors, setJsonErrors] = useState({});
 
+  // Initialize config when node changes
   useEffect(() => {
-    setConfig({
+    const initialConfig = {
       connection: {},
+      smtp_config: {},
       ...node.data.config,
-    });
+    };
+    setConfig(initialConfig);
+    setJsonErrors({});
   }, [node]);
+
   /**
-   * Handle form field change
+   * Handle form field change - Works for ALL field types
    */
   const handleChange = (field, value) => {
     setConfig((prev) => ({
       ...prev,
       [field]: value,
     }));
-    // Clear error for this field
+    
+    // Clear errors
     if (errors[field]) {
       setErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
+    }
+    if (jsonErrors[field]) {
+      setJsonErrors((prev) => {
         const newErrors = { ...prev };
         delete newErrors[field];
         return newErrors;
@@ -39,20 +49,60 @@ const NodeConfigPanel = ({ node, onClose, onUpdate, onDelete }) => {
   };
 
   /**
+   * Handle JSON field changes with validation
+   */
+  const handleJsonChange = (field, textValue) => {
+    try {
+      const parsed = JSON.parse(textValue);
+      handleChange(field, parsed);
+      setJsonErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors[field];
+        return newErrors;
+      });
+    } catch (err) {
+      // Store the text value temporarily
+      handleChange(field + '_text', textValue);
+      setJsonErrors((prev) => ({
+        ...prev,
+        [field]: `Invalid JSON: ${err.message}`,
+      }));
+    }
+  };
+
+  /**
+   * Get display value for JSON fields
+   */
+  const getJsonDisplayValue = (field) => {
+    // Check if there's a temporary text value
+    if (config[field + '_text']) {
+      return config[field + '_text'];
+    }
+    // Otherwise stringify the actual value
+    const value = config[field];
+    if (value === undefined || value === null) {
+      return '';
+    }
+    if (typeof value === 'string') {
+      return value;
+    }
+    return JSON.stringify(value, null, 2);
+  };
+
+  /**
    * Validate configuration
    */
   const validate = () => {
     const newErrors = {};
 
+    // Check for JSON errors
+    if (Object.keys(jsonErrors).length > 0) {
+      return false;
+    }
+
     if (node.type === "llm") {
       if (!config.prompt || config.prompt.trim() === "") {
         newErrors.prompt = "Prompt is required";
-      }
-      if (config.temperature < 0 || config.temperature > 2) {
-        newErrors.temperature = "Temperature must be between 0 and 2";
-      }
-      if (config.max_tokens < 1) {
-        newErrors.max_tokens = "Max tokens must be positive";
       }
     }
 
@@ -76,8 +126,16 @@ const NodeConfigPanel = ({ node, onClose, onUpdate, onDelete }) => {
    * Handle save
    */
   const handleSave = () => {
+    // Clean up temporary text fields before saving
+    const cleanConfig = { ...config };
+    Object.keys(cleanConfig).forEach(key => {
+      if (key.endsWith('_text')) {
+        delete cleanConfig[key];
+      }
+    });
+
     if (validate()) {
-      onUpdate(node.id, config);
+      onUpdate(node.id, cleanConfig);
       onClose();
     }
   };
@@ -121,18 +179,14 @@ const NodeConfigPanel = ({ node, onClose, onUpdate, onDelete }) => {
                 <input
                   type="number"
                   id="temperature"
-                  value={config.temperature || 0.7}
+                  value={config.temperature ?? 0.7}
                   onChange={(e) =>
-                    handleChange("temperature", parseFloat(e.target.value))
+                    handleChange("temperature", parseFloat(e.target.value) || 0)
                   }
                   min="0"
                   max="2"
                   step="0.1"
-                  className={errors.temperature ? "error" : ""}
                 />
-                {errors.temperature && (
-                  <span className="error-text">{errors.temperature}</span>
-                )}
                 <small>0 = focused, 2 = creative</small>
               </div>
 
@@ -141,17 +195,13 @@ const NodeConfigPanel = ({ node, onClose, onUpdate, onDelete }) => {
                 <input
                   type="number"
                   id="max_tokens"
-                  value={config.max_tokens || 500}
+                  value={config.max_tokens ?? 500}
                   onChange={(e) =>
-                    handleChange("max_tokens", parseInt(e.target.value))
+                    handleChange("max_tokens", parseInt(e.target.value) || 500)
                   }
                   min="1"
                   max="2000"
-                  className={errors.max_tokens ? "error" : ""}
                 />
-                {errors.max_tokens && (
-                  <span className="error-text">{errors.max_tokens}</span>
-                )}
                 <small>Maximum response length</small>
               </div>
             </div>
@@ -192,18 +242,15 @@ const NodeConfigPanel = ({ node, onClose, onUpdate, onDelete }) => {
               <label htmlFor="headers">Headers (JSON)</label>
               <textarea
                 id="headers"
-                value={JSON.stringify(config.headers || {}, null, 2)}
-                onChange={(e) => {
-                  try {
-                    const headers = JSON.parse(e.target.value);
-                    handleChange("headers", headers);
-                  } catch (err) {
-                    // Invalid JSON, ignore
-                  }
-                }}
+                value={getJsonDisplayValue('headers')}
+                onChange={(e) => handleJsonChange('headers', e.target.value)}
                 rows={3}
                 placeholder='{"Authorization": "Bearer token"}'
+                className={jsonErrors.headers ? "error" : ""}
               />
+              {jsonErrors.headers && (
+                <span className="error-text">{jsonErrors.headers}</span>
+              )}
               <small>Optional HTTP headers</small>
             </div>
           </>
@@ -254,7 +301,7 @@ const NodeConfigPanel = ({ node, onClose, onUpdate, onDelete }) => {
                 onChange={(e) => handleChange("left_value", e.target.value)}
                 placeholder="{{node_1.output}}"
               />
-              <small>Use {`{{node_id.field}}`} for dynamic values</small>{" "}
+              <small>Use {`{{node_id.field}}`} for dynamic values</small>
             </div>
 
             <div className="form-group">
@@ -289,35 +336,27 @@ const NodeConfigPanel = ({ node, onClose, onUpdate, onDelete }) => {
             <div className="form-group">
               <label>True Output (JSON)</label>
               <textarea
-                value={JSON.stringify(
-                  config.true_output || { result: true },
-                  null,
-                  2,
-                )}
-                onChange={(e) => {
-                  try {
-                    handleChange("true_output", JSON.parse(e.target.value));
-                  } catch {}
-                }}
+                value={getJsonDisplayValue('true_output') || JSON.stringify({ result: true }, null, 2)}
+                onChange={(e) => handleJsonChange('true_output', e.target.value)}
                 rows={3}
+                className={jsonErrors.true_output ? "error" : ""}
               />
+              {jsonErrors.true_output && (
+                <span className="error-text">{jsonErrors.true_output}</span>
+              )}
             </div>
 
             <div className="form-group">
               <label>False Output (JSON)</label>
               <textarea
-                value={JSON.stringify(
-                  config.false_output || { result: false },
-                  null,
-                  2,
-                )}
-                onChange={(e) => {
-                  try {
-                    handleChange("false_output", JSON.parse(e.target.value));
-                  } catch {}
-                }}
+                value={getJsonDisplayValue('false_output') || JSON.stringify({ result: false }, null, 2)}
+                onChange={(e) => handleJsonChange('false_output', e.target.value)}
                 rows={3}
+                className={jsonErrors.false_output ? "error" : ""}
               />
+              {jsonErrors.false_output && (
+                <span className="error-text">{jsonErrors.false_output}</span>
+              )}
             </div>
           </>
         );
@@ -346,11 +385,11 @@ const NodeConfigPanel = ({ node, onClose, onUpdate, onDelete }) => {
                 <label>Fields to Extract (comma-separated)</label>
                 <input
                   type="text"
-                  value={config.fields?.join(", ") || ""}
+                  value={Array.isArray(config.fields) ? config.fields.join(", ") : config.fields || ""}
                   onChange={(e) =>
                     handleChange(
                       "fields",
-                      e.target.value.split(",").map((s) => s.trim()),
+                      e.target.value.split(",").map((s) => s.trim()).filter(s => s)
                     )
                   }
                   placeholder="name, email, status"
@@ -362,15 +401,15 @@ const NodeConfigPanel = ({ node, onClose, onUpdate, onDelete }) => {
               <div className="form-group">
                 <label>Field Mapping (JSON)</label>
                 <textarea
-                  value={JSON.stringify(config.mapping || {}, null, 2)}
-                  onChange={(e) => {
-                    try {
-                      handleChange("mapping", JSON.parse(e.target.value));
-                    } catch {}
-                  }}
+                  value={getJsonDisplayValue('mapping') || '{}'}
+                  onChange={(e) => handleJsonChange('mapping', e.target.value)}
                   rows={4}
                   placeholder='{"newField": "oldField"}'
+                  className={jsonErrors.mapping ? "error" : ""}
                 />
+                {jsonErrors.mapping && (
+                  <span className="error-text">{jsonErrors.mapping}</span>
+                )}
               </div>
             )}
 
@@ -394,9 +433,9 @@ const NodeConfigPanel = ({ node, onClose, onUpdate, onDelete }) => {
               <label>Duration</label>
               <input
                 type="number"
-                value={config.duration || 1}
+                value={config.duration ?? 1}
                 onChange={(e) =>
-                  handleChange("duration", parseFloat(e.target.value))
+                  handleChange("duration", parseFloat(e.target.value) || 1)
                 }
                 placeholder="1"
                 min="0.001"
@@ -427,10 +466,6 @@ const NodeConfigPanel = ({ node, onClose, onUpdate, onDelete }) => {
               />
               <small>Description of why you're adding a delay</small>
             </div>
-
-            <div className="config-note">
-              <strong>⚠️ Max delay:</strong> 1 hour (3600 seconds)
-            </div>
           </>
         );
 
@@ -440,11 +475,10 @@ const NodeConfigPanel = ({ node, onClose, onUpdate, onDelete }) => {
             <div className="form-group">
               <label>Webhook URL *</label>
               <input
-                type="url"
+                type="text"
                 value={config.url || ""}
                 onChange={(e) => handleChange("url", e.target.value)}
                 placeholder="https://hooks.zapier.com/..."
-                required
               />
               <small>External webhook or API endpoint</small>
             </div>
@@ -466,24 +500,18 @@ const NodeConfigPanel = ({ node, onClose, onUpdate, onDelete }) => {
             <div className="form-group">
               <label>Request Body (JSON)</label>
               <textarea
-                value={
-                  typeof config.body === "string"
-                    ? config.body
-                    : JSON.stringify(config.body || {}, null, 2)
-                }
-                onChange={(e) => {
-                  try {
-                    handleChange("body", JSON.parse(e.target.value));
-                  } catch {
-                    handleChange("body", e.target.value);
-                  }
-                }}
+                value={getJsonDisplayValue('body') || '{}'}
+                onChange={(e) => handleJsonChange('body', e.target.value)}
                 rows={6}
                 placeholder={`{
   "message": "{{node_1.output}}",
   "status": "success"
 }`}
+                className={jsonErrors.body ? "error" : ""}
               />
+              {jsonErrors.body && (
+                <span className="error-text">{jsonErrors.body}</span>
+              )}
               <small>Use {`{{node_id.field}}`} for dynamic values</small>
             </div>
 
@@ -503,33 +531,26 @@ const NodeConfigPanel = ({ node, onClose, onUpdate, onDelete }) => {
             <div className="form-group">
               <label>Headers (JSON, optional)</label>
               <textarea
-                value={
-                  typeof config.headers === "string"
-                    ? config.headers
-                    : JSON.stringify(config.headers || {}, null, 2)
-                }
-                onChange={(e) => {
-                  try {
-                    handleChange("headers", JSON.parse(e.target.value));
-                  } catch {
-                    handleChange("headers", {});
-                  }
-                }}
+                value={getJsonDisplayValue('headers') || '{}'}
+                onChange={(e) => handleJsonChange('headers', e.target.value)}
                 rows={3}
                 placeholder={`{
-  "Authorization": "Bearer token",
-  "X-Custom-Header": "value"
+  "Authorization": "Bearer token"
 }`}
+                className={jsonErrors.headers ? "error" : ""}
               />
+              {jsonErrors.headers && (
+                <span className="error-text">{jsonErrors.headers}</span>
+              )}
             </div>
 
             <div className="form-group">
               <label>Timeout (seconds)</label>
               <input
                 type="number"
-                value={config.timeout || 30}
+                value={config.timeout ?? 30}
                 onChange={(e) =>
-                  handleChange("timeout", parseInt(e.target.value))
+                  handleChange("timeout", parseInt(e.target.value) || 30)
                 }
                 min="1"
                 max="300"
@@ -572,8 +593,7 @@ const NodeConfigPanel = ({ node, onClose, onUpdate, onDelete }) => {
                       host: e.target.value,
                     })
                   }
-                  placeholder="localhost or IP address"
-                  required
+                  placeholder="localhost"
                 />
               </div>
 
@@ -588,11 +608,8 @@ const NodeConfigPanel = ({ node, onClose, onUpdate, onDelete }) => {
                   onChange={(e) =>
                     handleChange("connection", {
                       ...(config.connection || {}),
-                      port: parseInt(e.target.value),
+                      port: parseInt(e.target.value) || 5432,
                     })
-                  }
-                  placeholder={
-                    config.connection?.type === "mysql" ? "3306" : "5432"
                   }
                 />
               </div>
@@ -609,7 +626,6 @@ const NodeConfigPanel = ({ node, onClose, onUpdate, onDelete }) => {
                     })
                   }
                   placeholder="my_database"
-                  required
                 />
               </div>
 
@@ -624,8 +640,7 @@ const NodeConfigPanel = ({ node, onClose, onUpdate, onDelete }) => {
                       user: e.target.value,
                     })
                   }
-                  placeholder="database_user"
-                  required
+                  placeholder="postgres"
                 />
               </div>
 
@@ -641,11 +656,7 @@ const NodeConfigPanel = ({ node, onClose, onUpdate, onDelete }) => {
                     })
                   }
                   placeholder="••••••••"
-                  required
                 />
-                <small>
-                  ⚠️ Stored securely - consider using environment variables
-                </small>
               </div>
             </div>
 
@@ -677,7 +688,6 @@ const NodeConfigPanel = ({ node, onClose, onUpdate, onDelete }) => {
                       value={config.table || ""}
                       onChange={(e) => handleChange("table", e.target.value)}
                       placeholder="users"
-                      required
                     />
                   </div>
 
@@ -685,11 +695,11 @@ const NodeConfigPanel = ({ node, onClose, onUpdate, onDelete }) => {
                     <label>Columns (comma-separated)</label>
                     <input
                       type="text"
-                      value={config.columns?.join(", ") || "*"}
+                      value={Array.isArray(config.columns) ? config.columns.join(", ") : config.columns || "*"}
                       onChange={(e) =>
                         handleChange(
                           "columns",
-                          e.target.value.split(",").map((s) => s.trim()),
+                          e.target.value.split(",").map((s) => s.trim()).filter(s => s)
                         )
                       }
                       placeholder="id, name, email or * for all"
@@ -699,19 +709,17 @@ const NodeConfigPanel = ({ node, onClose, onUpdate, onDelete }) => {
                   <div className="form-group">
                     <label>WHERE Conditions (JSON)</label>
                     <textarea
-                      value={JSON.stringify(config.where || {}, null, 2)}
-                      onChange={(e) => {
-                        try {
-                          handleChange("where", JSON.parse(e.target.value));
-                        } catch {}
-                      }}
+                      value={getJsonDisplayValue('where') || '{}'}
+                      onChange={(e) => handleJsonChange('where', e.target.value)}
                       rows={3}
                       placeholder={`{
-  "status": "active",
-  "role": "admin"
+  "status": "active"
 }`}
+                      className={jsonErrors.where ? "error" : ""}
                     />
-                    <small>Leave empty for no filter</small>
+                    {jsonErrors.where && (
+                      <span className="error-text">{jsonErrors.where}</span>
+                    )}
                   </div>
 
                   <div className="form-group">
@@ -720,7 +728,7 @@ const NodeConfigPanel = ({ node, onClose, onUpdate, onDelete }) => {
                       type="number"
                       value={config.limit || ""}
                       onChange={(e) =>
-                        handleChange("limit", parseInt(e.target.value))
+                        handleChange("limit", parseInt(e.target.value) || "")
                       }
                       placeholder="100"
                     />
@@ -748,34 +756,36 @@ const NodeConfigPanel = ({ node, onClose, onUpdate, onDelete }) => {
                       value={config.table || ""}
                       onChange={(e) => handleChange("table", e.target.value)}
                       placeholder="users"
-                      required
                     />
                   </div>
 
                   <div className="form-group">
-                    <label>Data to Insert (JSON) *</label>
+                    <label>Data to Insert (JSON or placeholder) *</label>
                     <textarea
-                      value={JSON.stringify(config.data || {}, null, 2)}
+                      value={getJsonDisplayValue('data') || '{}'}
                       onChange={(e) => {
-                        try {
-                          handleChange("data", JSON.parse(e.target.value));
-                        } catch {}
+                        const val = e.target.value.trim();
+                        // If it's a placeholder, store as string
+                        if (val.startsWith('{{') && val.endsWith('}}')) {
+                          handleChange('data', val);
+                        } else {
+                          handleJsonChange('data', e.target.value);
+                        }
                       }}
                       rows={6}
-                      placeholder={`{
-  "name": "{{node_1.name}}",
-  "email": "{{node_1.email}}",
-  "status": "active"
-}
+                      placeholder={`{{node_1}}
 
-Or array for multiple:
-[
-  {"name": "User1", "email": "user1@example.com"},
-  {"name": "User2", "email": "user2@example.com"}
-]`}
-                      required
+Or JSON:
+{
+  "name": "{{node_1.name}}",
+  "email": "{{node_1.email}}"
+}`}
+                      className={jsonErrors.data ? "error" : ""}
                     />
-                    <small>Use {`{{node_id.field}}`} for dynamic values</small>
+                    {jsonErrors.data && (
+                      <span className="error-text">{jsonErrors.data}</span>
+                    )}
+                    <small>Use {`{{node_id}}`} or JSON with placeholders</small>
                   </div>
                 </>
               )}
@@ -790,46 +800,39 @@ Or array for multiple:
                       value={config.table || ""}
                       onChange={(e) => handleChange("table", e.target.value)}
                       placeholder="users"
-                      required
                     />
                   </div>
 
                   <div className="form-group">
                     <label>Data to Update (JSON) *</label>
                     <textarea
-                      value={JSON.stringify(config.data || {}, null, 2)}
-                      onChange={(e) => {
-                        try {
-                          handleChange("data", JSON.parse(e.target.value));
-                        } catch {}
-                      }}
+                      value={getJsonDisplayValue('data') || '{}'}
+                      onChange={(e) => handleJsonChange('data', e.target.value)}
                       rows={4}
                       placeholder={`{
-  "status": "inactive",
-  "updated_at": "NOW()"
+  "status": "inactive"
 }`}
-                      required
+                      className={jsonErrors.data ? "error" : ""}
                     />
+                    {jsonErrors.data && (
+                      <span className="error-text">{jsonErrors.data}</span>
+                    )}
                   </div>
 
                   <div className="form-group">
                     <label>WHERE Conditions (JSON) *</label>
                     <textarea
-                      value={JSON.stringify(config.where || {}, null, 2)}
-                      onChange={(e) => {
-                        try {
-                          handleChange("where", JSON.parse(e.target.value));
-                        } catch {}
-                      }}
+                      value={getJsonDisplayValue('where') || '{}'}
+                      onChange={(e) => handleJsonChange('where', e.target.value)}
                       rows={3}
                       placeholder={`{
-  "id": "{{node_1.user_id}}"
+  "id": 1
 }`}
-                      required
+                      className={jsonErrors.where ? "error" : ""}
                     />
-                    <small>
-                      ⚠️ Required for safety - prevents updating all rows
-                    </small>
+                    {jsonErrors.where && (
+                      <span className="error-text">{jsonErrors.where}</span>
+                    )}
                   </div>
                 </>
               )}
@@ -844,33 +847,28 @@ Or array for multiple:
                       value={config.table || ""}
                       onChange={(e) => handleChange("table", e.target.value)}
                       placeholder="users"
-                      required
                     />
                   </div>
 
                   <div className="form-group">
                     <label>WHERE Conditions (JSON) *</label>
                     <textarea
-                      value={JSON.stringify(config.where || {}, null, 2)}
-                      onChange={(e) => {
-                        try {
-                          handleChange("where", JSON.parse(e.target.value));
-                        } catch {}
-                      }}
+                      value={getJsonDisplayValue('where') || '{}'}
+                      onChange={(e) => handleJsonChange('where', e.target.value)}
                       rows={3}
                       placeholder={`{
-  "id": "{{node_1.user_id}}"
+  "id": 1
 }`}
-                      required
+                      className={jsonErrors.where ? "error" : ""}
                     />
-                    <small>
-                      ⚠️ Required for safety - prevents deleting all rows
-                    </small>
+                    {jsonErrors.where && (
+                      <span className="error-text">{jsonErrors.where}</span>
+                    )}
                   </div>
                 </>
               )}
 
-              {/* CUSTOM QUERY Operation */}
+              {/* QUERY Operation */}
               {config.operation === "query" && (
                 <div className="form-group">
                   <label>SQL Query *</label>
@@ -878,31 +876,10 @@ Or array for multiple:
                     value={config.query || ""}
                     onChange={(e) => handleChange("query", e.target.value)}
                     rows={8}
-                    placeholder={`SELECT u.name, COUNT(o.id) as order_count
-FROM users u
-LEFT JOIN orders o ON u.id = o.user_id
-WHERE u.status = 'active'
-GROUP BY u.name
-ORDER BY order_count DESC
-LIMIT 10`}
-                    required
+                    placeholder={`SELECT * FROM users WHERE status = 'active'`}
                   />
-                  <small>
-                    ⚠️ Use parameterized queries for safety. Supports{" "}
-                    {`{{placeholders}}`}
-                  </small>
                 </div>
               )}
-            </div>
-
-            <div className="config-note">
-              <strong>💡 Tips:</strong>
-              <ul>
-                <li>Test connection with a simple SELECT first</li>
-                <li>Always use WHERE clauses for UPDATE/DELETE</li>
-                {/* <li>Use {{`{{node_id.field}}`}} for dynamic values</li> */}
-                <li>Limit results to avoid memory issues</li>
-              </ul>
             </div>
           </>
         );
@@ -911,29 +888,27 @@ LIMIT 10`}
         return (
           <>
             <div className="form-group">
-              <label>Credentials (Service Account JSON)</label>
+              <label>Credentials (File path or JSON)</label>
               <textarea
-                value={
-                  typeof config.credentials === "string"
-                    ? config.credentials
-                    : JSON.stringify(config.credentials || {}, null, 2)
-                }
+                value={getJsonDisplayValue('credentials') || ''}
                 onChange={(e) => {
-                  try {
-                    handleChange("credentials", JSON.parse(e.target.value));
-                  } catch {
-                    handleChange("credentials", e.target.value);
+                  const val = e.target.value.trim();
+                  // If it's a file path
+                  if (val.endsWith('.json') && !val.startsWith('{')) {
+                    handleChange('credentials', val);
+                  } else {
+                    handleJsonChange('credentials', e.target.value);
                   }
                 }}
                 rows={8}
-                placeholder={`{
-  "type": "service_account",
-  "project_id": "...",
-  "private_key": "...",
-  "client_email": "..."
-}`}
+                placeholder={`C:\\temp\\google-credentials.json
+
+Or paste JSON`}
+                className={jsonErrors.credentials ? "error" : ""}
               />
-              <small>Paste your Google Service Account JSON</small>
+              {jsonErrors.credentials && (
+                <span className="error-text">{jsonErrors.credentials}</span>
+              )}
             </div>
 
             <div className="form-group">
@@ -943,9 +918,7 @@ LIMIT 10`}
                 value={config.spreadsheet_id || ""}
                 onChange={(e) => handleChange("spreadsheet_id", e.target.value)}
                 placeholder="1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms"
-                required
               />
-              <small>From the Google Sheets URL</small>
             </div>
 
             <div className="form-group">
@@ -966,30 +939,35 @@ LIMIT 10`}
               <label>Range (A1 notation)</label>
               <input
                 type="text"
-                value={config.range || "Sheet1!A1:Z100"}
+                value={config.range || ""}
                 onChange={(e) => handleChange("range", e.target.value)}
                 placeholder="Sheet1!A1:D10"
               />
             </div>
 
-            {(config.operation === "write" ||
-              config.operation === "append") && (
+            {(config.operation === 'write' || config.operation === 'append' || config.operation === 'update') && (
               <div className="form-group">
-                <label>Values (JSON)</label>
+                <label>Values (JSON array)</label>
                 <textarea
-                  value={JSON.stringify(config.values || [], null, 2)}
+                  value={getJsonDisplayValue('values') || '[]'}
                   onChange={(e) => {
-                    try {
-                      handleChange("values", JSON.parse(e.target.value));
-                    } catch {}
+                    const val = e.target.value.trim();
+                    if (val.startsWith('{{') && val.endsWith('}}')) {
+                      handleChange('values', val);
+                    } else {
+                      handleJsonChange('values', e.target.value);
+                    }
                   }}
-                  rows={6}
-                  placeholder={`[
-  ["Name", "Email", "Status"],
-  ["{{node_1.name}}", "{{node_1.email}}", "active"]
-]`}
+                  rows={4}
+                  placeholder={`[["Value1", "Value2"]]
+
+Or use placeholder:
+{{node_1.rows}}`}
+                  className={jsonErrors.values ? "error" : ""}
                 />
-                <small>Use {`{{node_id.field}}`} for dynamic values</small>
+                {jsonErrors.values && (
+                  <span className="error-text">{jsonErrors.values}</span>
+                )}
               </div>
             )}
           </>
@@ -1019,9 +997,8 @@ LIMIT 10`}
                   type="text"
                   value={config.file_path || ""}
                   onChange={(e) => handleChange("file_path", e.target.value)}
-                  placeholder="/path/to/file.csv"
+                  placeholder="C:\\temp\\file.csv"
                 />
-                <small>Or provide file_content as base64</small>
               </div>
             )}
 
@@ -1029,20 +1006,29 @@ LIMIT 10`}
               config.operation === "write_excel") && (
               <>
                 <div className="form-group">
-                  <label>Data (JSON array)</label>
+                  <label>Data (JSON array or placeholder)</label>
                   <textarea
-                    value={JSON.stringify(config.data || [], null, 2)}
+                    value={getJsonDisplayValue('data') || '[]'}
                     onChange={(e) => {
-                      try {
-                        handleChange("data", JSON.parse(e.target.value));
-                      } catch {}
+                      const val = e.target.value.trim();
+                      if (val.startsWith('{{') && val.endsWith('}}')) {
+                        handleChange('data', val);
+                      } else {
+                        handleJsonChange('data', e.target.value);
+                      }
                     }}
                     rows={8}
                     placeholder={`[
   {"name": "Alice", "age": 30},
   {"name": "Bob", "age": 25}
-]`}
+]
+
+Or: {{node_1.rows}}`}
+                    className={jsonErrors.data ? "error" : ""}
                   />
+                  {jsonErrors.data && (
+                    <span className="error-text">{jsonErrors.data}</span>
+                  )}
                 </div>
 
                 {config.operation === "write_excel" && (
@@ -1050,7 +1036,7 @@ LIMIT 10`}
                     <label>Sheet Name</label>
                     <input
                       type="text"
-                      value={config.sheet_name || "Sheet1"}
+                      value={config.sheet_name || ""}
                       onChange={(e) =>
                         handleChange("sheet_name", e.target.value)
                       }
@@ -1097,11 +1083,11 @@ LIMIT 10`}
                   <label>SMTP Port</label>
                   <input
                     type="number"
-                    value={config.smtp_config?.port || 587}
+                    value={config.smtp_config?.port ?? 587}
                     onChange={(e) =>
                       handleChange("smtp_config", {
                         ...(config.smtp_config || {}),
-                        port: parseInt(e.target.value),
+                        port: parseInt(e.target.value) || 587,
                       })
                     }
                   />
@@ -1158,7 +1144,6 @@ LIMIT 10`}
                 value={config.from_email || ""}
                 onChange={(e) => handleChange("from_email", e.target.value)}
                 placeholder="noreply@example.com"
-                required
               />
             </div>
 
@@ -1169,7 +1154,6 @@ LIMIT 10`}
                 value={config.to || ""}
                 onChange={(e) => handleChange("to", e.target.value)}
                 placeholder="user@example.com"
-                required
               />
             </div>
 
@@ -1180,7 +1164,6 @@ LIMIT 10`}
                 value={config.subject || ""}
                 onChange={(e) => handleChange("subject", e.target.value)}
                 placeholder="Email Subject"
-                required
               />
             </div>
 
@@ -1191,7 +1174,6 @@ LIMIT 10`}
                 onChange={(e) => handleChange("body", e.target.value)}
                 rows={6}
                 placeholder="Email body content..."
-                required
               />
             </div>
 
@@ -1218,9 +1200,7 @@ LIMIT 10`}
                 value={config.token || ""}
                 onChange={(e) => handleChange("token", e.target.value)}
                 placeholder="xoxb-your-bot-token"
-                required
               />
-              <small>Slack Bot User OAuth Token</small>
             </div>
 
             <div className="form-group">
@@ -1229,8 +1209,7 @@ LIMIT 10`}
                 type="text"
                 value={config.channel || ""}
                 onChange={(e) => handleChange("channel", e.target.value)}
-                placeholder="#general or @username"
-                required
+                placeholder="#general"
               />
             </div>
 
@@ -1241,9 +1220,7 @@ LIMIT 10`}
                 onChange={(e) => handleChange("message", e.target.value)}
                 rows={4}
                 placeholder="Your message here..."
-                required
               />
-              <small>Supports markdown formatting</small>
             </div>
 
             <div className="form-group">
@@ -1278,7 +1255,6 @@ LIMIT 10`}
                 value={config.account_sid || ""}
                 onChange={(e) => handleChange("account_sid", e.target.value)}
                 placeholder="ACxxxxxxxxxxxxx"
-                required
               />
             </div>
 
@@ -1289,7 +1265,6 @@ LIMIT 10`}
                 value={config.auth_token || ""}
                 onChange={(e) => handleChange("auth_token", e.target.value)}
                 placeholder="Auth token"
-                required
               />
             </div>
 
@@ -1300,9 +1275,7 @@ LIMIT 10`}
                 value={config.from_number || ""}
                 onChange={(e) => handleChange("from_number", e.target.value)}
                 placeholder="+1234567890"
-                required
               />
-              <small>Your Twilio phone number (E.164 format)</small>
             </div>
 
             <div className="form-group">
@@ -1312,7 +1285,6 @@ LIMIT 10`}
                 value={config.to || ""}
                 onChange={(e) => handleChange("to", e.target.value)}
                 placeholder="+1987654321"
-                required
               />
             </div>
 
@@ -1324,7 +1296,6 @@ LIMIT 10`}
                 rows={3}
                 placeholder="Your SMS message..."
                 maxLength={1600}
-                required
               />
               <small>Max 1600 characters</small>
             </div>
@@ -1350,6 +1321,12 @@ LIMIT 10`}
           <strong>Node ID:</strong> {node.id}
         </div>
 
+        {Object.keys(jsonErrors).length > 0 && (
+          <div className="error-banner">
+            ⚠️ Fix JSON errors before saving
+          </div>
+        )}
+
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -1374,7 +1351,11 @@ LIMIT 10`}
               >
                 Cancel
               </button>
-              <button type="submit" className="btn btn-primary">
+              <button 
+                type="submit" 
+                className="btn btn-primary"
+                disabled={Object.keys(jsonErrors).length > 0}
+              >
                 💾 Save
               </button>
             </div>

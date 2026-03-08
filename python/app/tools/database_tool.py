@@ -241,49 +241,54 @@ class DatabaseTool(BaseTool):
     
     def _execute_insert(self, config: Dict[str, Any], inputs: Dict[str, Any]) -> Dict[str, Any]:
         """Execute INSERT operation"""
+        
         table = config.get('table')
         data = config.get('data')
-        
-        if not table:
-            raise ValueError("Table name is required for INSERT operation")
         
         if not data:
             raise ValueError("Data is required for INSERT operation")
         
-        # Resolve placeholders
+        # ✅ CRITICAL FIX - Resolve placeholders FIRST
         data = self._resolve_placeholders(data, inputs)
         
-        # Handle single record or multiple records
-        if isinstance(data, dict):
-            records = [data]
-        elif isinstance(data, list):
+        print(f"🔍 DEBUG - Data after placeholder resolution: {data}")
+        
+        if not data:
+            raise ValueError("Data is required for INSERT operation (empty after placeholder resolution)")
+        
+        # Handle batch insert (list of dicts)
+        if isinstance(data, list):
             records = data
         else:
-            raise ValueError("Data must be a dict or list of dicts")
+            records = [data]
         
-        cursor = self.connection.cursor()
-        inserted_count = 0
+        print(f"✍️  Inserting {len(records)} record(s) into {table}")
         
+        # Build INSERT query
+        if not records:
+            raise ValueError("No records to insert")
+        
+        columns = list(records[0].keys())
+        placeholders = ', '.join(['%s'] * len(columns))
+        columns_str = ', '.join(columns)
+        
+        query = f"INSERT INTO {table} ({columns_str}) VALUES ({placeholders})"
+        
+        # Execute for each record
+        inserted = 0
         for record in records:
-            columns = list(record.keys())
-            values = list(record.values())
-            placeholders = ', '.join(['%s'] * len(values))
-            
-            query = f"INSERT INTO {table} ({', '.join(columns)}) VALUES ({placeholders})"
-            cursor.execute(query, values)
-            inserted_count += 1
+            values = [record.get(col) for col in columns]
+            self.cursor.execute(query, values)
+            inserted += 1
         
         self.connection.commit()
-        cursor.close()
-        
-        print(f"✅ Inserted {inserted_count} record(s) into {table}")
+        print(f"✅ Inserted {inserted} record(s) into {table}")
         
         return {
             'success': True,
             'operation': 'insert',
             'table': table,
-            'inserted_rows': inserted_count,
-            'data': records
+            'inserted_rows': inserted
         }
     
     def _execute_update(self, config: Dict[str, Any], inputs: Dict[str, Any]) -> Dict[str, Any]:
