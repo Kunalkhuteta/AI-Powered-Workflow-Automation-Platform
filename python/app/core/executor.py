@@ -90,7 +90,7 @@ class WorkflowExecutor:
         for edge in edges:
             edge_dict = edge.dict() if hasattr(edge, 'dict') else edge.__dict__
             
-            # Check if source is conditional
+            # Check if source is conditional or loop
             source_type = node_types.get(edge_dict.get('source'))
             
             if source_type == 'conditional':
@@ -105,6 +105,17 @@ class WorkflowExecutor:
                     elif 'false' in str(source_handle).lower():
                         edge_dict['label'] = 'false'
                         print(f"🔧 Auto-set edge label: {edge_dict['source']} → {edge_dict['target']} = 'false'")
+            
+            elif source_type == 'loop':
+                source_handle = edge_dict.get('sourceHandle', '')
+                
+                if not edge_dict.get('label') and source_handle:
+                    if 'body' in str(source_handle).lower():
+                        edge_dict['label'] = 'loop_body'
+                        print(f"🔧 Auto-set edge label: {edge_dict['source']} → {edge_dict['target']} = 'loop_body'")
+                    elif 'done' in str(source_handle).lower():
+                        edge_dict['label'] = 'loop_done'
+                        print(f"🔧 Auto-set edge label: {edge_dict['source']} → {edge_dict['target']} = 'loop_done'")
             
             # Create edge object with updated dict
             normalized.append(type('Edge', (), edge_dict)())
@@ -158,9 +169,11 @@ class WorkflowExecutor:
             results[node_id] = result
             print(f"[Executed {node_id}] ✅")
             
-            # Track conditional branch
+            # Track branching (conditional or loop)
             if node.type == 'conditional' and result.status == 'success':
-                self._track_conditional_branch(node_id, result.output)
+                self._track_branch(node_id, result.output)
+            elif node.type == 'loop' and result.status == 'success':
+                self._track_loop_branch(node_id, result.output)
             
             if result.status == "failed":
                 raise ToolExecutionError(
@@ -206,6 +219,7 @@ class WorkflowExecutor:
             
             # Skip if edge doesn't match active branch
             if edge_branch and edge_branch != active_branch:
+                # For loops, 'loop_body' and 'loop_done' are the valid labels
                 return True, f"Not on active '{active_branch}' branch (edge is '{edge_branch}')"
         
         return False, ""
@@ -219,29 +233,46 @@ class WorkflowExecutor:
             if edge_source == source and edge_target == target:
                 # Method 1: Check label (set by normalize_edges)
                 label = getattr(edge, 'label', None)
-                if label and str(label).lower() in ['true', 'false']:
-                    return str(label).lower()
+                if label:
+                    label_str = str(label).lower()
+                    if label_str in ['true', 'false', 'loop_body', 'loop_done']:
+                        return label_str
                 
-                # Method 2: Check sourceHandle
+                # Method 3: Check for loop handles
                 source_handle = getattr(edge, 'sourceHandle', None)
                 if source_handle:
                     handle = str(source_handle).lower()
-                    if 'true' in handle:
-                        return 'true'
-                    elif 'false' in handle:
-                        return 'false'
+                    if 'body' in handle:
+                        return 'loop_body'
+                    elif 'done' in handle:
+                        return 'loop_done'
                 
                 # No branch info
                 return None
         
         return None
     
-    def _track_conditional_branch(self, node_id: str, output: Any) -> None:
-        """Track which branch was taken"""
+    def _track_branch(self, node_id: str, output: Any) -> None:
+        """Track which branch was taken (for conditionals)"""
         if isinstance(output, dict) and 'branch_taken' in output:
             branch = output['branch_taken']
             self.active_branches[node_id] = branch
             print(f"✅ Conditional {node_id}: Branch '{branch}' active")
+
+    def _track_loop_branch(self, node_id: str, output: Any) -> None:
+        """Track loop branch based on completion"""
+        if isinstance(output, dict) and output.get('type') == 'loop_result':
+            # In a DAG engine, we typically go to 'done' after processing
+            # or 'body' if we want to signal success. 
+            # For this engine, we'll signal 'loop_done' as the primary path
+            # and 'loop_body' if the user wants to branch on items.
+            if output.get('iterations_completed', 0) > 0:
+                self.active_branches[node_id] = 'loop_body'
+                # Special: if both exist, usually 'done' is also active eventually
+                # but for DAG branching, we pick one per execution pass
+            else:
+                self.active_branches[node_id] = 'loop_done'
+            print(f"✅ Loop {node_id}: Branch '{self.active_branches[node_id]}' active")
     
     async def _execute_single_node(
         self,

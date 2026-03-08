@@ -1302,6 +1302,460 @@ Or: {{node_1.rows}}`}
           </>
         );
 
+      case "loop":
+        return (
+          <>
+            <div className="form-section">
+              <h4>🔁 Loop Configuration</h4>
+
+              <div className="form-group">
+                <label>Loop Type *</label>
+                <select
+                  value={config.loop_type || "forEach"}
+                  onChange={(e) => handleChange("loop_type", e.target.value)}
+                >
+                  <option value="forEach">For Each — Iterate over array items</option>
+                  <option value="for">For — Fixed number of iterations</option>
+                  <option value="while">While — Loop until condition is false</option>
+                  <option value="map">Map — Transform each item</option>
+                </select>
+                <small>Choose how you want to iterate</small>
+              </div>
+
+              {(config.loop_type === "forEach" || config.loop_type === "map" || !config.loop_type) && (
+                <div className="form-group">
+                  <label>Source Array *</label>
+                  <input
+                    type="text"
+                    value={config.source_array || ""}
+                    onChange={(e) => handleChange("source_array", e.target.value)}
+                    placeholder="{{node_1.output}} or {{node_1.items}}"
+                  />
+                  <small>Use {`{{node_id.field}}`} to reference an array from a previous node</small>
+                </div>
+              )}
+
+              <div className="form-group">
+                <label>Variable Name</label>
+                <input
+                  type="text"
+                  value={config.variable_name || "item"}
+                  onChange={(e) => handleChange("variable_name", e.target.value)}
+                  placeholder="item"
+                />
+                <small>Name of the variable for each iteration (accessible as {`{{loop.item}}`})</small>
+              </div>
+            </div>
+
+            <div className="form-section">
+              <h4>⚙️ Loop Settings</h4>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Max Iterations</label>
+                  <input
+                    type="number"
+                    value={config.max_iterations ?? 100}
+                    onChange={(e) =>
+                      handleChange("max_iterations", parseInt(e.target.value) || 100)
+                    }
+                    min="1"
+                    max="10000"
+                  />
+                  <small>Safety limit to prevent infinite loops</small>
+                </div>
+
+                <div className="form-group">
+                  <label>Batch Size</label>
+                  <input
+                    type="number"
+                    value={config.batch_size ?? 1}
+                    onChange={(e) =>
+                      handleChange("batch_size", parseInt(e.target.value) || 1)
+                    }
+                    min="1"
+                    max="1000"
+                  />
+                  <small>Process N items at once</small>
+                </div>
+              </div>
+
+              {config.loop_type === "while" && (
+                <div className="form-group">
+                  <label>While Condition *</label>
+                  <input
+                    type="text"
+                    value={config.condition || ""}
+                    onChange={(e) => handleChange("condition", e.target.value)}
+                    placeholder="{{loop.index}} < 10"
+                  />
+                  <small>Loop continues while this condition is true</small>
+                </div>
+              )}
+
+              {config.loop_type === "for" && (
+                <div className="form-row">
+                  <div className="form-group">
+                    <label>Start</label>
+                    <input
+                      type="number"
+                      value={config.start ?? 0}
+                      onChange={(e) =>
+                        handleChange("start", parseInt(e.target.value) || 0)
+                      }
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>End</label>
+                    <input
+                      type="number"
+                      value={config.end ?? 10}
+                      onChange={(e) =>
+                        handleChange("end", parseInt(e.target.value) || 10)
+                      }
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>Step</label>
+                    <input
+                      type="number"
+                      value={config.step ?? 1}
+                      onChange={(e) =>
+                        handleChange("step", parseInt(e.target.value) || 1)
+                      }
+                      min="1"
+                    />
+                  </div>
+                </div>
+              )}
+
+              <div className="form-group">
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={config.continue_on_error || false}
+                    onChange={(e) =>
+                      handleChange("continue_on_error", e.target.checked)
+                    }
+                  />
+                  Continue on error (skip failed items)
+                </label>
+              </div>
+
+              <div className="form-group">
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={config.collect_results || true}
+                    onChange={(e) =>
+                      handleChange("collect_results", e.target.checked)
+                    }
+                  />
+                  Collect results into output array
+                </label>
+              </div>
+            </div>
+          </>
+        );
+
+      case "code_executor":
+        return (
+          <>
+            <div className="form-section">
+              <h4>💻 Code Configuration</h4>
+
+              <div className="form-group">
+                <label>Language *</label>
+                <select
+                  value={config.language || "python"}
+                  onChange={(e) => handleChange("language", e.target.value)}
+                >
+                  <option value="python">🐍 Python</option>
+                  <option value="javascript">⚡ JavaScript (Node.js)</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>Code *</label>
+                <textarea
+                  value={config.code || ""}
+                  onChange={(e) => handleChange("code", e.target.value)}
+                  rows={12}
+                  placeholder={
+                    config.language === "javascript"
+                      ? "// Write your JavaScript code here\n// Access input data via 'inputData' variable\n// Return result:\n\nconst result = inputData;\nreturn result;"
+                      : "# Write your Python code here\n# Access input data via 'input_data' variable\n# Set result via 'output' variable\n\noutput = input_data"
+                  }
+                  className="code-textarea"
+                  spellCheck="false"
+                  style={{
+                    fontFamily: "'Fira Code', 'Consolas', 'Monaco', monospace",
+                    fontSize: "13px",
+                    lineHeight: "1.5",
+                    tabSize: 2,
+                    backgroundColor: "#1e1e2e",
+                    color: "#cdd6f4",
+                    borderRadius: "8px",
+                    padding: "12px",
+                  }}
+                />
+                <small>
+                  {config.language === "javascript"
+                    ? "Access inputs via 'inputData'. Return your result."
+                    : "Access inputs via 'input_data'. Set 'output' variable."}
+                </small>
+              </div>
+            </div>
+
+            <div className="form-section">
+              <h4>⚙️ Execution Settings</h4>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Timeout (seconds)</label>
+                  <input
+                    type="number"
+                    value={config.timeout ?? 30}
+                    onChange={(e) =>
+                      handleChange("timeout", parseInt(e.target.value) || 30)
+                    }
+                    min="1"
+                    max="300"
+                  />
+                  <small>Max execution time</small>
+                </div>
+
+                <div className="form-group">
+                  <label>Memory Limit (MB)</label>
+                  <input
+                    type="number"
+                    value={config.memory_limit ?? 128}
+                    onChange={(e) =>
+                      handleChange("memory_limit", parseInt(e.target.value) || 128)
+                    }
+                    min="16"
+                    max="1024"
+                  />
+                  <small>Max memory usage</small>
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label>NPM Packages / Pip Packages (optional)</label>
+                <input
+                  type="text"
+                  value={config.packages || ""}
+                  onChange={(e) => handleChange("packages", e.target.value)}
+                  placeholder={
+                    config.language === "javascript"
+                      ? "lodash, axios, moment"
+                      : "pandas, numpy, requests"
+                  }
+                />
+                <small>Comma-separated list of packages to install</small>
+              </div>
+
+              <div className="form-group">
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={config.sandbox || true}
+                    onChange={(e) =>
+                      handleChange("sandbox", e.target.checked)
+                    }
+                  />
+                  Run in sandboxed environment (recommended)
+                </label>
+              </div>
+            </div>
+          </>
+        );
+
+      case "ai_vision":
+        return (
+          <>
+            <div className="form-section">
+              <h4>👁️ Vision Configuration</h4>
+
+              <div className="form-group">
+                <label>Operation *</label>
+                <select
+                  value={config.operation || "analyze"}
+                  onChange={(e) => handleChange("operation", e.target.value)}
+                >
+                  <option value="analyze">🔍 Analyze Image — General analysis</option>
+                  <option value="ocr">📝 OCR — Extract text from image</option>
+                  <option value="detect">🎯 Object Detection — Find objects</option>
+                  <option value="classify">🏷️ Classification — Categorize image</option>
+                  <option value="describe">💬 Describe — Generate description</option>
+                  <option value="compare">⚖️ Compare — Compare two images</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>Image Source *</label>
+                <select
+                  value={config.image_source || "url"}
+                  onChange={(e) => handleChange("image_source", e.target.value)}
+                >
+                  <option value="url">URL — From web address</option>
+                  <option value="base64">Base64 — Encoded image data</option>
+                  <option value="input">Input — From previous node</option>
+                </select>
+              </div>
+
+              {config.image_source === "url" && (
+                <div className="form-group">
+                  <label>Image URL *</label>
+                  <input
+                    type="text"
+                    value={config.image_url || ""}
+                    onChange={(e) => handleChange("image_url", e.target.value)}
+                    placeholder="https://example.com/image.jpg or {{node_1.image_url}}"
+                  />
+                  <small>Direct URL to the image or dynamic reference</small>
+                </div>
+              )}
+
+              {config.image_source === "base64" && (
+                <div className="form-group">
+                  <label>Base64 Data *</label>
+                  <textarea
+                    value={config.base64_data || ""}
+                    onChange={(e) => handleChange("base64_data", e.target.value)}
+                    rows={4}
+                    placeholder="data:image/png;base64,... or {{node_1.image_data}}"
+                  />
+                  <small>Paste base64 encoded image data or use dynamic reference</small>
+                </div>
+              )}
+
+              {config.image_source === "input" && (
+                <div className="form-group">
+                  <label>Input Source</label>
+                  <input
+                    type="text"
+                    value={config.input_node || ""}
+                    onChange={(e) => handleChange("input_node", e.target.value)}
+                    placeholder="{{node_1.output}}"
+                  />
+                  <small>Reference to image data from a previous node</small>
+                </div>
+              )}
+
+              {config.operation === "compare" && (
+                <div className="form-group">
+                  <label>Second Image URL *</label>
+                  <input
+                    type="text"
+                    value={config.image_url_2 || ""}
+                    onChange={(e) => handleChange("image_url_2", e.target.value)}
+                    placeholder="https://example.com/image2.jpg"
+                  />
+                  <small>URL of the second image to compare</small>
+                </div>
+              )}
+            </div>
+
+            <div className="form-section">
+              <h4>🤖 AI Settings</h4>
+
+              {(config.operation === "analyze" || config.operation === "describe" || config.operation === "compare") && (
+                <div className="form-group">
+                  <label>Prompt</label>
+                  <textarea
+                    value={config.prompt || ""}
+                    onChange={(e) => handleChange("prompt", e.target.value)}
+                    rows={4}
+                    placeholder="Describe this image in detail..."
+                  />
+                  <small>Instructions for the AI on how to analyze the image</small>
+                </div>
+              )}
+
+              <div className="form-group">
+                <label>Model</label>
+                <select
+                  value={config.model || "gpt-4o"}
+                  onChange={(e) => handleChange("model", e.target.value)}
+                >
+                  <option value="gpt-4o">GPT-4o (Best quality)</option>
+                  <option value="gpt-4o-mini">GPT-4o Mini (Faster)</option>
+                  <option value="claude-3-5-sonnet">Claude 3.5 Sonnet</option>
+                  <option value="gemini-pro-vision">Gemini Pro Vision</option>
+                </select>
+              </div>
+
+              {config.operation === "ocr" && (
+                <div className="form-group">
+                  <label>OCR Language</label>
+                  <select
+                    value={config.ocr_language || "eng"}
+                    onChange={(e) => handleChange("ocr_language", e.target.value)}
+                  >
+                    <option value="eng">English</option>
+                    <option value="spa">Spanish</option>
+                    <option value="fra">French</option>
+                    <option value="deu">German</option>
+                    <option value="chi_sim">Chinese (Simplified)</option>
+                    <option value="jpn">Japanese</option>
+                    <option value="kor">Korean</option>
+                    <option value="hin">Hindi</option>
+                    <option value="ara">Arabic</option>
+                    <option value="auto">Auto-detect</option>
+                  </select>
+                </div>
+              )}
+
+              {(config.operation === "detect" || config.operation === "classify") && (
+                <div className="form-group">
+                  <label>Confidence Threshold</label>
+                  <input
+                    type="number"
+                    value={config.confidence_threshold ?? 0.7}
+                    onChange={(e) =>
+                      handleChange("confidence_threshold", parseFloat(e.target.value) || 0.7)
+                    }
+                    min="0"
+                    max="1"
+                    step="0.05"
+                  />
+                  <small>Minimum confidence score (0-1) for results</small>
+                </div>
+              )}
+
+              {config.operation === "detect" && (
+                <div className="form-group">
+                  <label>Max Results</label>
+                  <input
+                    type="number"
+                    value={config.max_results ?? 10}
+                    onChange={(e) =>
+                      handleChange("max_results", parseInt(e.target.value) || 10)
+                    }
+                    min="1"
+                    max="100"
+                  />
+                  <small>Maximum number of objects to detect</small>
+                </div>
+              )}
+
+              <div className="form-group">
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={config.include_bounding_boxes || false}
+                    onChange={(e) =>
+                      handleChange("include_bounding_boxes", e.target.checked)
+                    }
+                  />
+                  Include bounding box coordinates in output
+                </label>
+              </div>
+            </div>
+          </>
+        );
+
       default:
         return <p>Unknown node type</p>;
     }

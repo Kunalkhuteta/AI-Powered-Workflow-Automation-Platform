@@ -14,3 +14,6 @@ requests==2.31.0
 # Development Dependencies
 pytest==7.4.3
 httpx==0.26.0
+
+# Image Processing (AI Vision Tool)
+Pillow==10.2.0
