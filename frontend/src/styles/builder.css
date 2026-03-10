@@ -34,69 +34,51 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 20px;
-  background: white;
-  border-bottom: 1px solid #e5e7eb;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
-.toolbar-left,
-.toolbar-right {
-  display: flex;
-  gap: 12px;
-  align-items: center;
+  padding: 12px 24px;
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-bottom: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-sm);
+  z-index: 100;
 }
 
 .workflow-name-input {
-  font-size: 16px;
-  font-weight: 600;
-  padding: 8px 12px;
-  border: 2px solid transparent;
-  border-radius: 6px;
-  min-width: 250px;
-  transition: all 0.2s;
+  font-size: 18px;
+  font-weight: 700;
+  padding: 8px 16px;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  transition: all 0.3s;
+  letter-spacing: -0.02em;
 }
 
 .workflow-name-input:hover {
-  border-color: #e5e7eb;
+  background: rgba(255, 255, 255, 0.05);
+  border-color: var(--border-primary);
 }
 
 .workflow-name-input:focus {
   outline: none;
-  border-color: #3b82f6;
-  background: #f9fafb;
+  background: var(--bg-primary);
+  border-color: var(--primary-500);
+  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
 }
 
-/* ============================================
-   BUTTONS
-   ============================================ */
-
+/* PREMIUM BUTTONS */
 .btn {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 6px;
+  padding: 10px 20px;
+  border-radius: var(--radius-md);
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-}
-
-.btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.btn:active {
-  transform: translateY(0);
-}
-
-.btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  transform: none;
+  gap: 8px;
+  border: none;
 }
 
 .btn-primary {

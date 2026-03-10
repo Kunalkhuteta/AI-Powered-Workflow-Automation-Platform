@@ -1756,6 +1756,233 @@ Or: {{node_1.rows}}`}
           </>
         );
 
+      case "file_ops":
+        return (
+          <>
+            <div className="form-group">
+              <label>Action *</label>
+              <select
+                value={config.action || "read"}
+                onChange={(e) => handleChange("action", e.target.value)}
+              >
+                <option value="read">Read File</option>
+                <option value="write">Write File</option>
+                <option value="upload">Upload/Copy</option>
+                <option value="download">Download</option>
+                <option value="delete">Delete File</option>
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label>Filename *</label>
+              <input
+                type="text"
+                value={config.filename || ""}
+                onChange={(e) => handleChange("filename", e.target.value)}
+                placeholder="document.txt"
+              />
+              <small>Name of the file in storage. Use {`{{node_id.field}}`} for dynamic values.</small>
+            </div>
+
+            {config.action === "write" && (
+              <div className="form-group">
+                <label>Content to Write</label>
+                <textarea
+                  value={config.content || ""}
+                  onChange={(e) => handleChange("content", e.target.value)}
+                  placeholder="Text content to write..."
+                  rows={5}
+                />
+              </div>
+            )}
+
+            {config.action === "upload" && (
+              <div className="form-group">
+                <label>Source Path *</label>
+                <input
+                  type="text"
+                  value={config.source_path || ""}
+                  onChange={(e) => handleChange("source_path", e.target.value)}
+                  placeholder="/local/path/to/upload.pdf"
+                />
+              </div>
+            )}
+
+            {config.action === "download" && (
+              <div className="form-group">
+                <label>Destination Path *</label>
+                <input
+                  type="text"
+                  value={config.destination_path || ""}
+                  onChange={(e) => handleChange("destination_path", e.target.value)}
+                  placeholder="/local/path/to/save.pdf"
+                />
+              </div>
+            )}
+          </>
+        );
+
+      case "pdf":
+        return (
+          <>
+            <div className="form-group">
+              <label>Action *</label>
+              <select
+                value={config.action || "extract_text"}
+                onChange={(e) => handleChange("action", e.target.value)}
+              >
+                <option value="extract_text">Extract Text</option>
+                <option value="generate">Generate PDF</option>
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label>Filename *</label>
+              <input
+                type="text"
+                value={config.filename || ""}
+                onChange={(e) => handleChange("filename", e.target.value)}
+                placeholder="document.pdf"
+              />
+            </div>
+
+            {config.action === "extract_text" && (
+              <div className="form-group">
+                <label>Max Pages</label>
+                <input
+                  type="number"
+                  value={config.max_pages || 0}
+                  onChange={(e) => handleChange("max_pages", parseInt(e.target.value) || 0)}
+                  placeholder="0 (All pages)"
+                />
+                <small>Leave as 0 to extract all pages</small>
+              </div>
+            )}
+
+            {config.action === "generate" && (
+              <div className="form-group">
+                <label>Content *</label>
+                <textarea
+                  value={config.content || ""}
+                  onChange={(e) => handleChange("content", e.target.value)}
+                  placeholder="Text to turn into PDF..."
+                  rows={6}
+                />
+              </div>
+            )}
+          </>
+        );
+
+      case "image":
+        return (
+          <>
+            <div className="form-group">
+              <label>Action *</label>
+              <select
+                value={config.action || "resize"}
+                onChange={(e) => handleChange("action", e.target.value)}
+              >
+                <option value="resize">Resize</option>
+                <option value="crop">Crop</option>
+                <option value="filter">Apply Filter</option>
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label>Input Filename *</label>
+              <input
+                type="text"
+                value={config.filename || ""}
+                onChange={(e) => handleChange("filename", e.target.value)}
+                placeholder="image.jpg"
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Output Filename</label>
+              <input
+                type="text"
+                value={config.output_filename || ""}
+                onChange={(e) => handleChange("output_filename", e.target.value)}
+                placeholder="edited_image.jpg (optional)"
+              />
+            </div>
+
+            {config.action === "resize" && (
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Width</label>
+                  <input
+                    type="number"
+                    value={config.width || 800}
+                    onChange={(e) => handleChange("width", parseInt(e.target.value) || 0)}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Height</label>
+                  <input
+                    type="number"
+                    value={config.height || 600}
+                    onChange={(e) => handleChange("height", parseInt(e.target.value) || 0)}
+                  />
+                </div>
+              </div>
+            )}
+
+            {config.action === "crop" && (
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Left</label>
+                  <input
+                    type="number"
+                    value={config.left || 0}
+                    onChange={(e) => handleChange("left", parseInt(e.target.value) || 0)}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Top</label>
+                  <input
+                    type="number"
+                    value={config.top || 0}
+                    onChange={(e) => handleChange("top", parseInt(e.target.value) || 0)}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Right</label>
+                  <input
+                    type="number"
+                    value={config.right || 0}
+                    onChange={(e) => handleChange("right", parseInt(e.target.value) || 0)}
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Bottom</label>
+                  <input
+                    type="number"
+                    value={config.bottom || 0}
+                    onChange={(e) => handleChange("bottom", parseInt(e.target.value) || 0)}
+                  />
+                </div>
+              </div>
+            )}
+
+            {config.action === "filter" && (
+              <div className="form-group">
+                <label>Filter Type</label>
+                <select
+                  value={config.filter_type || "grayscale"}
+                  onChange={(e) => handleChange("filter_type", e.target.value)}
+                >
+                  <option value="grayscale">Grayscale</option>
+                  <option value="blur">Blur</option>
+                  <option value="contour">Contour</option>
+                  <option value="sharpen">Sharpen</option>
+                </select>
+              </div>
+            )}
+          </>
+        );
+
       default:
         return <p>Unknown node type</p>;
     }

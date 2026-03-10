@@ -42,6 +42,9 @@ import SMSNode from "./nodes/SMSNode";
 import LoopNode from "./nodes/LoopNode";
 import CodeExecutorNode from "./nodes/CodeExecutorNode";
 import AIVisionNode from "./nodes/AIVisionNode";
+import FileOpsNode from "./nodes/FileOpsNode";
+import PDFNode from "./nodes/PDFNode";
+import ImageNode from "./nodes/ImageNode";
 
 const nodeTypes = {
   llm: LLMNode,
@@ -60,6 +63,9 @@ const nodeTypes = {
   loop: LoopNode,
   code_executor: CodeExecutorNode,
   ai_vision: AIVisionNode,
+  file_ops: FileOpsNode,
+  pdf: PDFNode,
+  image: ImageNode,
 };
 
 const WorkflowBuilder = () => {
@@ -293,6 +299,33 @@ const WorkflowBuilder = () => {
           confidence_threshold: 0.7,
           ocr_language: "eng",
           max_results: 10,
+        };
+
+      case "file_ops":
+        return {
+          action: "read",
+          filename: "",
+          content: "",
+          source_path: "",
+          destination_path: "",
+        };
+
+      case "pdf":
+        return {
+          action: "extract_text",
+          filename: "",
+          content: "",
+          max_pages: 0,
+        };
+
+      case "image":
+        return {
+          action: "resize",
+          filename: "",
+          output_filename: "",
+          width: 800,
+          height: 600,
+          filter_type: "grayscale",
         };
 
       default:

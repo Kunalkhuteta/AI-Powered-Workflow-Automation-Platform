@@ -32,6 +32,9 @@ from app.tools.sms_tool import SMSTool
 from app.tools.loop_tool import LoopTool
 from app.tools.code_executor_tool import CodeExecutorTool
 from app.tools.ai_vision_tool import AIVisionTool
+from app.tools.file_ops_tool import FileOpsTool
+from app.tools.pdf_tool import PDFTool
+from app.tools.image_tool import ImageTool
 
 
 @asynccontextmanager
@@ -60,6 +63,9 @@ async def lifespan(app: FastAPI):
     tool_registry.register("loop", LoopTool())
     tool_registry.register("code_executor", CodeExecutorTool())
     tool_registry.register("ai_vision", AIVisionTool())
+    tool_registry.register("file_ops", FileOpsTool())
+    tool_registry.register("pdf", PDFTool())
+    tool_registry.register("image", ImageTool())
 
 
     

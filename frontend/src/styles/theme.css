@@ -4,143 +4,88 @@
  */
 
 :root {
-  /* Primary Colors */
-  --primary-50: #eff6ff;
-  --primary-100: #dbeafe;
-  --primary-200: #bfdbfe;
-  --primary-300: #93c5fd;
-  --primary-400: #60a5fa;
-  --primary-500: #3b82f6;
-  --primary-600: #2563eb;
-  --primary-700: #1d4ed8;
-  --primary-800: #1e40af;
-  --primary-900: #1e3a8a;
+  /* VIBRANT CORE PALETTE (Indigo/Violet) */
+  --primary-50: #eef2ff;
+  --primary-100: #e0e7ff;
+  --primary-200: #c7d2fe;
+  --primary-300: #a5b4fc;
+  --primary-400: #818cf8;
+  --primary-500: #6366f1; /* Main Brand Color */
+  --primary-600: #4f46e5;
+  --primary-700: #4338ca;
+  --primary-800: #3730a3;
+  --primary-900: #312e81;
 
-  /* Success */
-  --success-50: #f0fdf4;
-  --success-100: #dcfce7;
-  --success-500: #22c55e;
-  --success-600: #16a34a;
-  --success-700: #15803d;
-
-  /* Error */
-  --error-50: #fef2f2;
-  --error-100: #fee2e2;
+  /* ACCENT & EMOTIONAL COLORS */
+  --success-500: #10b981;
   --error-500: #ef4444;
-  --error-600: #dc2626;
-  --error-700: #b91c1c;
-
-  /* Warning */
-  --warning-50: #fffbeb;
-  --warning-100: #fef3c7;
   --warning-500: #f59e0b;
-  --warning-600: #d97706;
-  --warning-700: #b45309;
+  --info-500: #3b82f6;
 
-  /* Purple */
-  --purple-50: #faf5ff;
-  --purple-100: #f3e8ff;
-  --purple-500: #a855f7;
-  --purple-600: #9333ea;
-  --purple-700: #7e22ce;
-
-  /* LIGHT MODE */
+  /* LIGHT MODE - NEUTRALS */
   --bg-primary: #ffffff;
   --bg-secondary: #f8fafc;
   --bg-tertiary: #f1f5f9;
-  --bg-hover: #e2e8f0;
-  --bg-active: #cbd5e1;
-  
   --text-primary: #0f172a;
   --text-secondary: #475569;
   --text-tertiary: #94a3b8;
-  --text-inverse: #ffffff;
-  
   --border-primary: #e2e8f0;
   --border-secondary: #cbd5e1;
-  --border-focus: #3b82f6;
-  
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
 
-  /* React Flow Canvas - LIGHT */
+  /* GLASSMORPHISM - LIGHT */
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.3);
+  --glass-blur: blur(12px);
+
+  /* SHADOWS & RADIUS */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+  --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.1);
+  --shadow-premium: 0 20px 50px rgba(0, 0, 0, 0.1);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+
+  /* REACT FLOW CANVAS */
   --reactflow-bg: #f8fafc;
   --reactflow-grid: #e2e8f0;
-  
-  /* NODES ALWAYS LIGHT - These don't change */
-  --node-bg: #ffffff;
-  --node-border: #e2e8f0;
-  --node-text: #0f172a;
-  --node-text-secondary: #64748b;
-  
-  --node-llm-bg: #eff6ff;
-  --node-llm-border: #3b82f6;
-  --node-llm-text: #1e40af;
-  
-  --node-http-bg: #f0fdf4;
-  --node-http-border: #22c55e;
-  --node-http-text: #15803d;
-  
-  --node-logger-bg: #f8fafc;
-  --node-logger-border: #64748b;
-  --node-logger-text: #334155;
-  
-  --node-conditional-bg: #fffbeb;
-  --node-conditional-border: #f59e0b;
-  --node-conditional-text: #92400e;
-  
-  --node-transform-bg: #faf5ff;
-  --node-transform-border: #a855f7;
-  --node-transform-text: #6b21a8;
 }
 
 [data-theme="dark"] {
-  /* DARK MODE - UI Only */
-  --bg-primary: #1e293b;
-  --bg-secondary: #0f172a;
-  --bg-tertiary: #0a0f1e;
-  --bg-hover: #334155;
-  --bg-active: #475569;
-  
-  --text-primary: #f1f5f9;
+  /* DARK MODE - DEEP NAVY/SLATE */
+  --bg-primary: #0f172a;
+  --bg-secondary: #0b1120;
+  --bg-tertiary: #1e293b;
+  --text-primary: #f8fafc;
   --text-secondary: #cbd5e1;
   --text-tertiary: #94a3b8;
-  --text-inverse: #0f172a;
-  
-  --border-primary: #334155;
-  --border-secondary: #475569;
-  
-  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.6);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.7);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.8);
+  --border-primary: #1e293b;
+  --border-secondary: #334155;
 
-  /* React Flow Canvas - DARK */
-  --reactflow-bg: #0f172a;
+  /* GLASSMORPHISM - DARK */
+  --glass-bg: rgba(15, 23, 42, 0.8);
+  --glass-border: rgba(255, 255, 255, 0.05);
+
+  --reactflow-bg: #0b1120;
   --reactflow-grid: #1e293b;
-  
-  /* NODES STAY LIGHT - Don't change these! */
-  /* --node-* variables stay the same */
 }
 
-/* Smooth Transitions */
+/* GLOBAL RESET & BASE STYLES */
 * {
-  transition: background-color 0.2s ease, 
-              color 0.2s ease, 
-              border-color 0.2s ease;
+  box-sizing: border-box;
+  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1), 
+              border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Body */
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Outfit', 'Inter', system-ui, -apple-system, sans-serif;
   color: var(--text-primary);
   background-color: var(--bg-secondary);
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   margin: 0;
-  padding: 0;
+  overflow-x: hidden;
 }
 
 h1, h2, h3, h4, h5, h6 {

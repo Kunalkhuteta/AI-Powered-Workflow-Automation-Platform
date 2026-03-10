@@ -144,6 +144,75 @@ const NodePalette = () => {
       ],
     },
     {
+      id: "media",
+      label: "Files & Media",
+      icon: "📁",
+      nodes: [
+        {
+          type: "file_ops",
+          label: "File Operations",
+          icon: (
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" />
+              <polyline points="13 2 13 9 20 9" />
+            </svg>
+          ),
+          description: "Read, write, upload, and download files",
+          color: "#eab308",
+        },
+        {
+          type: "pdf",
+          label: "PDF Tool",
+          icon: (
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+              <path d="M9 15v-4" />
+              <path d="M12 15v-4" />
+              <path d="M15 15v-4" />
+              <path d="M9 13h6" />
+            </svg>
+          ),
+          description: "Generate and extract text from PDFs",
+          color: "#ef4444",
+        },
+        {
+          type: "image",
+          label: "Image Tool",
+          icon: (
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+              <circle cx="8.5" cy="8.5" r="1.5" />
+              <polyline points="21 15 16 10 5 21" />
+            </svg>
+          ),
+          description: "Resize, crop, and apply filters to images",
+          color: "#f43f5e",
+        },
+      ],
+    },
+    {
       id: "data",
       label: "Data & Transform",
       icon: "🔄",
