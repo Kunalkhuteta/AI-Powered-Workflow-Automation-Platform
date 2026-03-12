@@ -17,8 +17,10 @@ class FileOpsTool(BaseTool):
 
     def __init__(self):
         super().__init__()
-        # Ensure a base directory exists for safe operations
-        self.base_dir = os.path.join(os.getcwd(), "data", "storage")
+        # Ensure a base directory exists for safe operations, absolute to project
+        # Go up two levels from app.tools to project root
+        self.project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        self.base_dir = os.path.join(self.project_root, "data", "storage")
         os.makedirs(self.base_dir, exist_ok=True)
 
     def execute(

@@ -29,9 +29,29 @@ const app = express();
 app.use(helmet());
 
 // CORS: Enable Cross-Origin Resource Sharing
+// Allow both local development servers and the deployed Vercel frontend
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:5173', // Vite default
+  process.env.CLIENT_URL
+].filter(Boolean);
+
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || 'http://localhost:3000',
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        // If it's a deployed Vercel preview URL, it might be dynamic.
+        // For maximum compatibility during deployment phase, we can allow it
+        // or check if it ends with vercel.app
+        if (origin.endsWith('vercel.app')) {
+          callback(null, true);
+        } else {
+          callback(new Error('Not allowed by CORS'));
+        }
+      }
+    },
     credentials: true,
   })
 );

@@ -23,7 +23,8 @@ class PDFTool(BaseTool):
 
     def __init__(self):
         super().__init__()
-        self.base_dir = os.path.join(os.getcwd(), "data", "storage")
+        self.project_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+        self.base_dir = os.path.join(self.project_root, "data", "storage")
         os.makedirs(self.base_dir, exist_ok=True)
 
     def execute(

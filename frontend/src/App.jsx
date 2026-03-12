@@ -13,7 +13,7 @@ import { apiService } from "./services/api";
 import "./styles/theme.css";
 import "./styles/nodes.css";
 import "./styles/login.css";
-import "./styles/App.css";
+import "./styles/app.css";
 import "./styles/builder.css";
 import "./styles/executor.css";
 
