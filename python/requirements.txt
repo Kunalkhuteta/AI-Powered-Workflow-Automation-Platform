@@ -20,6 +20,7 @@ google-api-python-client==2.118.0
 google-auth-httplib2==0.2.0
 google-auth-oauthlib==1.2.0
 sendgrid==6.11.0
+twilio==8.2.2
 
 # Development Dependencies
 pytest==7.4.3
@@ -31,3 +32,6 @@ Pillow==10.2.0
 # PDF Processing
 reportlab==4.1.0
 PyPDF2==3.0.1
+
+# CSV & Excel Processing
+openpyxl==3.1.2
