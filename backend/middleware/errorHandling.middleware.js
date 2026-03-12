@@ -68,7 +68,8 @@ const errorHandler = (err, req, res, next) => {
   }
 
   // Send error response
-  res.status(error.statusCode || err.statusCode || 500).json({
+  const statusCode = error.statusCode || err.statusCode || (res.statusCode === 200 ? 500 : res.statusCode);
+  res.status(statusCode).json({
     success: false,
     message: error.message || 'Server Error',
     // Include stack trace only in development for debugging
@@ -85,6 +86,7 @@ const errorHandler = (err, req, res, next) => {
  */
 const notFound = (req, res, next) => {
   const error = new Error(`Route not found - ${req.originalUrl}`);
+  error.statusCode = 404;
   res.status(404);
   next(error);
 };
