@@ -14,6 +14,10 @@
   background: #020617; /* Deepest Navy */
 }
 
+[data-theme="light"] .login-container {
+  background: var(--bg-secondary);
+}
+
 .login-background {
   position: absolute;
   inset: 0;

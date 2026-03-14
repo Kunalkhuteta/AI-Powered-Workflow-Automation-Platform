@@ -674,3 +674,28 @@
   tab-size: 2;
   resize: vertical;
 }
+
+/* Base Node Types Dark Mode Overrides */
+[data-theme="dark"] .delay-node { background: rgba(99, 102, 241, 0.1) !important; border-color: #6366f1; }
+[data-theme="dark"] .delay-icon { background: linear-gradient(135deg, rgba(99, 102, 241, 0.3), rgba(99, 102, 241, 0.1)); color: #a5b4fc; }
+
+[data-theme="dark"] .webhook-node { background: rgba(6, 182, 212, 0.1) !important; border-color: #06b6d4; }
+[data-theme="dark"] .webhook-icon { background: linear-gradient(135deg, rgba(6, 182, 212, 0.3), rgba(6, 182, 212, 0.1)); color: #67e8f9; }
+
+[data-theme="dark"] .database-node { background: rgba(124, 58, 237, 0.1) !important; border-color: #7c3aed; }
+[data-theme="dark"] .database-icon { background: linear-gradient(135deg, rgba(124, 58, 237, 0.3), rgba(124, 58, 237, 0.1)); color: #c4b5fd; }
+
+[data-theme="dark"] .sheets-node { background: rgba(15, 157, 88, 0.1) !important; border-color: #0f9d58; }
+[data-theme="dark"] .sheets-icon { background: linear-gradient(135deg, rgba(15, 157, 88, 0.3), rgba(15, 157, 88, 0.1)); color: #86efac; }
+
+[data-theme="dark"] .csv-excel-node { background: rgba(30, 136, 229, 0.1) !important; border-color: #1e88e5; }
+[data-theme="dark"] .csv-excel-icon { background: linear-gradient(135deg, rgba(30, 136, 229, 0.3), rgba(30, 136, 229, 0.1)); color: #93c5fd; }
+
+[data-theme="dark"] .email-node { background: rgba(234, 67, 53, 0.1) !important; border-color: #ea4335; }
+[data-theme="dark"] .email-icon { background: linear-gradient(135deg, rgba(234, 67, 53, 0.3), rgba(234, 67, 53, 0.1)); color: #fca5a5; }
+
+[data-theme="dark"] .slack-node { background: rgba(74, 21, 75, 0.15) !important; border-color: #6b21a8; }
+[data-theme="dark"] .slack-icon { background: linear-gradient(135deg, rgba(74, 21, 75, 0.4), rgba(74, 21, 75, 0.2)); color: #d8b4fe; }
+
+[data-theme="dark"] .sms-node { background: rgba(5, 150, 105, 0.1) !important; border-color: #059669; }
+[data-theme="dark"] .sms-icon { background: linear-gradient(135deg, rgba(5, 150, 105, 0.3), rgba(5, 150, 105, 0.1)); color: #6ee7b7; }

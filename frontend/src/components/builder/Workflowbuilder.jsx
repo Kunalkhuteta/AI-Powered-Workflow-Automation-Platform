@@ -378,7 +378,7 @@ const WorkflowBuilder = () => {
             edgeStyle = { stroke: "#ef4444", strokeWidth: 2 };
             edgeLabelStyle = { fill: "#ef4444", fontWeight: 600 };
           } else {
-            toast.warn("Conditional node already has both branches");
+            toast.error("Conditional node already has both branches");
             return; // Don't add more than 2 edges
           }
         }

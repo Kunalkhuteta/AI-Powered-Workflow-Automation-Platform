@@ -1,7 +1,6 @@
 /**
  * builder.css - Complete Styling for Visual Workflow Builder
- * 
- * Professional, clean interface for the drag-and-drop builder
+ * Professional, clean interface with full dark/light theme support
  */
 
 /* ============================================
@@ -12,7 +11,7 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background: #f9fafb;
+  background: var(--bg-secondary);
 }
 
 .builder-content {
@@ -24,110 +23,7 @@
 .builder-canvas {
   flex: 1;
   position: relative;
-}
-
-/* ============================================
-   TOOLBAR
-   ============================================ */
-
-.builder-toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 12px 24px;
-  background: var(--glass-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border-bottom: 1px solid var(--glass-border);
-  box-shadow: var(--shadow-sm);
-  z-index: 100;
-}
-
-.workflow-name-input {
-  font-size: 18px;
-  font-weight: 700;
-  padding: 8px 16px;
-  background: transparent;
-  border: 1px solid transparent;
-  border-radius: var(--radius-md);
-  color: var(--text-primary);
-  transition: all 0.3s;
-  letter-spacing: -0.02em;
-}
-
-.workflow-name-input:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: var(--border-primary);
-}
-
-.workflow-name-input:focus {
-  outline: none;
-  background: var(--bg-primary);
-  border-color: var(--primary-500);
-  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
-}
-
-/* PREMIUM BUTTONS */
-.btn {
-  padding: 10px 20px;
-  border-radius: var(--radius-md);
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  border: none;
-}
-
-.btn-primary {
-  background: #3b82f6;
-  color: white;
-}
-
-.btn-primary:hover {
-  background: #2563eb;
-}
-
-.btn-secondary {
-  background: #6b7280;
-  color: white;
-}
-
-.btn-secondary:hover {
-  background: #4b5563;
-}
-
-.btn-success {
-  background: #10b981;
-  color: white;
-}
-
-.btn-success:hover {
-  background: #059669;
-}
-
-.btn-danger {
-  background: #ef4444;
-  color: white;
-}
-
-.btn-danger:hover {
-  background: #dc2626;
-}
-
-/* ============================================
-   NODE PALETTE (Sidebar)
-   ============================================ */
-
-.node-palette {
-  width: 260px;
-  background: white;
-  border-right: 1px solid #e5e7eb;
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
+  background: var(--reactflow-bg);
 }
 
 /* ============================================
@@ -144,23 +40,27 @@
   z-index: 999;
 }
 
+[data-theme="dark"] .builder-loading-overlay {
+  background: rgba(15, 23, 42, 0.85);
+}
+
 .builder-loading-content {
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 16px 24px;
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+  background: var(--bg-primary);
+  box-shadow: var(--shadow-lg);
   font-weight: 600;
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .builder-spinner {
   width: 18px;
   height: 18px;
-  border: 3px solid rgba(59, 130, 246, 0.3);
-  border-top-color: #3b82f6;
+  border: 3px solid var(--border-primary);
+  border-top-color: var(--primary-500);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -171,107 +71,88 @@
   }
 }
 
-.palette-header {
-  padding: 20px;
-  border-bottom: 1px solid #e5e7eb;
-}
+/* ============================================
+   PREMIUM BUTTONS
+   ============================================ */
 
-.palette-header h3 {
-  margin: 0;
-  font-size: 18px;
-  color: #111827;
-}
-
-.palette-subtitle {
-  margin: 4px 0 0 0;
-  font-size: 13px;
-  color: #6b7280;
-}
-
-.palette-nodes {
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.palette-node {
-  display: flex;
-  gap: 12px;
-  padding: 12px;
-  background: white;
-  border: 2px solid #e5e7eb;
-  border-radius: 8px;
-  cursor: grab;
-  transition: all 0.2s;
-}
-
-.palette-node:hover {
-  background: #f9fafb;
-  border-color: #d1d5db;
-  transform: translateX(4px);
-}
-
-.palette-node:active {
-  cursor: grabbing;
-  transform: scale(0.95);
-}
-
-.palette-node-icon {
-  font-size: 24px;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.palette-node-content {
-  flex: 1;
-}
-
-.palette-node-label {
-  font-weight: 600;
+.btn {
+  padding: 10px 20px;
+  border-radius: var(--radius-md);
   font-size: 14px;
-  color: #111827;
-  margin-bottom: 2px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: none;
 }
 
-.palette-node-description {
-  font-size: 12px;
-  color: #6b7280;
-  line-height: 1.4;
+.btn-primary {
+  background: var(--primary-500);
+  color: white;
 }
 
-.palette-help {
-  margin-top: auto;
-  padding: 16px;
-  background: #f9fafb;
-  border-top: 1px solid #e5e7eb;
+.btn-primary:hover {
+  background: var(--primary-600);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
 }
 
-.help-item {
-  font-size: 12px;
-  color: #6b7280;
-  margin-bottom: 8px;
-  line-height: 1.5;
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
 }
 
-.help-item strong {
-  color: #111827;
+.btn-secondary {
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border-primary);
+}
+
+.btn-secondary:hover {
+  background: var(--bg-hover);
+  border-color: var(--border-secondary);
+}
+
+.btn-success {
+  background: var(--success-500);
+  color: white;
+}
+
+.btn-success:hover {
+  background: var(--success-600);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-danger {
+  background: var(--error-500);
+  color: white;
+}
+
+.btn-danger:hover {
+  background: var(--error-600);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
 }
 
 /* ============================================
-   NODE CONFIGURATION PANEL
+   NODE CONFIG PANEL (builder.css overrides)
    ============================================ */
 
 .node-config-panel {
   width: 360px;
-  background: white;
-  border-left: 1px solid #e5e7eb;
+  background: var(--bg-primary);
+  border-left: 1px solid var(--border-primary);
   display: flex;
   flex-direction: column;
   box-shadow: -2px 0 8px rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="dark"] .node-config-panel {
+  box-shadow: -2px 0 12px rgba(0, 0, 0, 0.3);
 }
 
 .panel-header {
@@ -279,20 +160,21 @@
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--border-primary);
+  background: var(--bg-secondary);
 }
 
 .panel-header h3 {
   margin: 0;
   font-size: 16px;
-  color: #111827;
+  color: var(--text-primary);
 }
 
 .close-btn {
   background: none;
   border: none;
   font-size: 24px;
-  color: #6b7280;
+  color: var(--text-tertiary);
   cursor: pointer;
   padding: 0;
   width: 32px;
@@ -305,8 +187,8 @@
 }
 
 .close-btn:hover {
-  background: #f3f4f6;
-  color: #111827;
+  background: var(--error-50);
+  color: var(--error-500);
 }
 
 .panel-content {
@@ -317,11 +199,15 @@
 
 .node-info {
   padding: 12px;
-  background: #f9fafb;
+  background: var(--bg-tertiary);
   border-radius: 6px;
   margin-bottom: 20px;
   font-size: 13px;
-  color: #6b7280;
+  color: var(--text-secondary);
+}
+
+.node-info strong {
+  color: var(--text-primary);
 }
 
 /* ============================================
@@ -338,23 +224,43 @@
   gap: 16px;
 }
 
+.form-section {
+  margin-bottom: 24px;
+  padding: 16px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-primary);
+}
+
+.form-section h4 {
+  margin: 0 0 16px 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
 .form-group label {
   display: block;
   font-size: 13px;
   font-weight: 600;
-  color: #374151;
+  color: var(--text-primary);
   margin-bottom: 6px;
 }
 
 .form-group input[type="text"],
+.form-group input[type="email"],
 .form-group input[type="number"],
+.form-group input[type="password"],
+.form-group input[type="tel"],
 .form-group textarea,
 .form-group select {
   width: 100%;
   padding: 8px 12px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border-primary);
   border-radius: 6px;
   font-size: 14px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
   transition: all 0.2s;
 }
 
@@ -362,8 +268,19 @@
 .form-group textarea:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: var(--primary-500);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+[data-theme="dark"] .form-group input:focus,
+[data-theme="dark"] .form-group textarea:focus,
+[data-theme="dark"] .form-group select:focus {
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: var(--text-tertiary);
 }
 
 .form-group textarea {
@@ -376,19 +293,50 @@
   display: block;
   margin-top: 4px;
   font-size: 12px;
-  color: #6b7280;
+  color: var(--text-tertiary);
+}
+
+.form-group select {
+  cursor: pointer;
+}
+
+/* Checkbox styling */
+.form-group input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+  accent-color: var(--primary-500);
+  cursor: pointer;
+}
+
+.form-group label:has(input[type="checkbox"]) {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 500;
 }
 
 .error-text {
   display: block;
   margin-top: 4px;
   font-size: 12px;
-  color: #ef4444;
+  color: var(--error-500);
+}
+
+.error-banner {
+  padding: 12px 16px;
+  background: var(--error-50);
+  border: 1px solid var(--error-200);
+  border-radius: var(--radius-sm);
+  color: var(--error-600);
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 16px;
 }
 
 .form-group input.error,
 .form-group textarea.error {
-  border-color: #ef4444;
+  border-color: var(--error-500);
 }
 
 .form-actions {
@@ -396,7 +344,7 @@
   justify-content: space-between;
   gap: 12px;
   padding-top: 20px;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--border-primary);
   margin-top: 20px;
 }
 
@@ -406,341 +354,13 @@
 }
 
 /* ============================================
-   CUSTOM NODES (React Flow)
+   REACT FLOW THEMING
    ============================================ */
 
-.custom-node {
-  min-width: 150px;
-  background: white;
-  border: 2px solid #e5e7eb;
-  border-radius: 8px;
-  padding: 0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  transition: all 0.2s;
-}
-
-.custom-node:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.custom-node.selected {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.2);
-}
-
-.node-header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 12px;
-  border-bottom: 1px solid #e5e7eb;
-  font-weight: 600;
-  font-size: 13px;
-}
-
-.node-header span {
-  font-size: 18px;
-}
-
-.node-body {
-  padding: 10px 12px;
-  font-size: 12px;
-  color: #6b7280;
-}
-
-/* Node type specific colors */
-.llm-node {
-  border-color: #3b82f6;
-}
-
-.llm-node .node-header {
-  background: #eff6ff;
-  color: #1e40af;
-}
-
-.http-node {
-  border-color: #10b981;
-}
-
-.http-node .node-header {
-  background: #d1fae5;
-  color: #065f46;
-}
-
-.logger-node {
-  border-color: #6b7280;
-}
-
-.logger-node .node-header {
-  background: #f3f4f6;
-  color: #374151;
-}
-
-/* ============================================
-   TEMPLATES MODAL
-   ============================================ */
-
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  animation: fadeIn 0.2s;
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-.modal-content {
-  background: white;
-  border-radius: 12px;
-  max-width: 900px;
-  width: 90%;
-  max-height: 80vh;
-  overflow: auto;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  animation: slideUp 0.3s;
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 24px;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.modal-header h2 {
-  margin: 0;
-  font-size: 20px;
-  color: #111827;
-}
-
-.modal-header button {
-  background: none;
-  border: none;
-  font-size: 28px;
-  color: #6b7280;
-  cursor: pointer;
-  padding: 0;
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 6px;
-  transition: all 0.2s;
-}
-
-.modal-header button:hover {
-  background: #f3f4f6;
-  color: #111827;
-}
-
-.templates-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 20px;
-  padding: 24px;
-}
-
-.template-card {
-  border: 2px solid #e5e7eb;
-  border-radius: 8px;
-  padding: 20px;
-  text-align: center;
-  transition: all 0.2s;
-  cursor: pointer;
-}
-
-.template-card:hover {
-  border-color: #3b82f6;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transform: translateY(-2px);
-}
-
-.template-icon {
-  font-size: 48px;
-  margin-bottom: 12px;
-}
-
-.template-card h3 {
-  margin: 0 0 8px 0;
-  font-size: 16px;
-  color: #111827;
-}
-
-.template-card p {
-  margin: 0 0 16px 0;
-  font-size: 13px;
-  color: #6b7280;
-  line-height: 1.5;
-}
-
-/* ============================================
-   REACT FLOW OVERRIDES
-   ============================================ */
-
-.react-flow__background {
-  background-color: #fafafa;
-}
-
-.react-flow__edge-path {
-  stroke: #9ca3af;
-  stroke-width: 2px;
-}
-
-.react-flow__edge.selected .react-flow__edge-path {
-  stroke: #3b82f6;
-  stroke-width: 3px;
-}
-
-.react-flow__handle {
-  width: 12px;
-  height: 12px;
-  background: #3b82f6;
-  border: 2px solid white;
-}
-
-.react-flow__handle:hover {
-  background: #2563eb;
-  transform: scale(1.2);
-}
-
-/* ============================================
-   TOAST NOTIFICATIONS (react-hot-toast)
-   ============================================ */
-
-.react-hot-toast {
-  font-size: 14px;
-}
-
-/* ============================================
-   RESPONSIVE
-   ============================================ */
-
-@media (max-width: 1024px) {
-  .node-palette {
-    width: 220px;
-  }
-
-  .node-config-panel {
-    width: 300px;
-  }
-}
-
-@media (max-width: 768px) {
-  .builder-content {
-    flex-direction: column;
-  }
-
-  .node-palette {
-    width: 100%;
-    height: auto;
-    max-height: 200px;
-    border-right: none;
-    border-bottom: 1px solid #e5e7eb;
-  }
-
-  .palette-nodes {
-    flex-direction: row;
-    overflow-x: auto;
-  }
-
-  .node-config-panel {
-    width: 100%;
-    border-left: none;
-    border-top: 1px solid #e5e7eb;
-  }
-}
-
-/* ============================================
-   UTILITIES
-   ============================================ */
-
-.text-center {
-  text-align: center;
-}
-
-.mt-4 {
-  margin-top: 16px;
-}
-
-.mb-4 {
-  margin-bottom: 16px;
-}
-.conditional-node {
-  border-color: #f59e0b;
-}
-
-.conditional-node .node-header {
-  background: #fef3c7;
-  color: #92400e;
-}
-
-.transform-node {
-  border-color: #8b5cf6;
-}
-
-.transform-node .node-header {
-  background: #ede9fe;
-  color: #5b21b6;
-}
-
-/**
- * BUILDER.CSS - React Flow Canvas Theming
- * Canvas switches theme, nodes stay light
- */
-
-.workflow-builder {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  background: var(--bg-secondary);
-}
-
-.builder-content {
-  display: flex;
-  flex: 1;
-  overflow: hidden;
-}
-
-/* BUILDER CANVAS - THEMED */
-.builder-canvas {
-  flex: 1;
-  position: relative;
-  background: var(--reactflow-bg);
-}
-
-/* REACT FLOW THEMING */
 .react-flow {
   background: var(--reactflow-bg) !important;
 }
 
-/* Background Grid - Changes with theme */
 .react-flow__background {
   background: var(--reactflow-bg) !important;
 }
@@ -750,7 +370,7 @@
   stroke-width: 1;
 }
 
-/* Edges - Visible in both themes */
+/* Edges */
 .react-flow__edge-path {
   stroke: var(--border-secondary) !important;
   stroke-width: 2;
@@ -776,7 +396,7 @@
   fill: var(--bg-primary);
 }
 
-/* Controls - Themed */
+/* Controls */
 .react-flow__controls {
   background: var(--bg-primary) !important;
   border: 2px solid var(--border-primary) !important;
@@ -798,7 +418,20 @@
   fill: var(--text-primary) !important;
 }
 
-/* MiniMap - Themed */
+/* Handles */
+.react-flow__handle {
+  width: 12px;
+  height: 12px;
+  background: var(--primary-500);
+  border: 2px solid var(--bg-primary);
+}
+
+.react-flow__handle:hover {
+  background: var(--primary-600);
+  transform: scale(1.2);
+}
+
+/* MiniMap */
 .react-flow__minimap {
   background: var(--bg-primary) !important;
   border: 2px solid var(--border-primary) !important;
@@ -822,12 +455,11 @@
   border: 2px solid var(--primary-500) !important;
 }
 
-/* Node Selection Indicator */
 .react-flow__node.selected {
   outline: none !important;
 }
 
-/* Pane - Canvas area */
+/* Pane */
 .react-flow__pane {
   cursor: grab;
 }
@@ -836,7 +468,7 @@
   cursor: grabbing;
 }
 
-/* Attribution - Styled */
+/* Attribution */
 .react-flow__attribution {
   background: var(--bg-primary) !important;
   color: var(--text-tertiary) !important;
@@ -846,7 +478,10 @@
   font-size: 10px !important;
 }
 
-/* MODAL OVERLAY */
+/* ============================================
+   MODAL OVERLAY
+   ============================================ */
+
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -863,12 +498,8 @@
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .modal-content {
@@ -883,17 +514,10 @@
 }
 
 @keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+  from { opacity: 0; transform: translateY(20px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-/* MODAL HEADER */
 .modal-header {
   display: flex;
   justify-content: space-between;
@@ -930,7 +554,10 @@
   transform: rotate(90deg);
 }
 
-/* TEMPLATES GRID */
+/* ============================================
+   TEMPLATES GRID
+   ============================================ */
+
 .templates-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -978,25 +605,63 @@
 .template-card .btn {
   width: 100%;
   padding: 12px;
-  background: var(--primary-500);
-  color: white;
-  border: none;
-  border-radius: 8px;
+  justify-content: center;
+}
+
+/* ============================================
+   NODE TYPE-SPECIFIC HEADER COLORS
+   (kept for compatibility with older node styles)
+   ============================================ */
+
+.conditional-node {
+  border-color: var(--warning-500);
+}
+
+.conditional-node .node-header {
+  background: var(--warning-100);
+  color: var(--warning-700);
+}
+
+.transform-node {
+  border-color: var(--purple-700);
+}
+
+.transform-node .node-header {
+  background: var(--purple-100);
+  color: var(--purple-700);
+}
+
+/* ============================================
+   TOAST (react-hot-toast)
+   ============================================ */
+
+.react-hot-toast {
   font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
 }
 
-.template-card .btn:hover {
-  background: var(--primary-600);
-  transform: translateY(-1px);
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+
+@media (max-width: 1024px) {
+  .node-config-panel {
+    width: 300px;
+  }
 }
 
-/* RESPONSIVE */
 @media (max-width: 768px) {
+  .builder-content {
+    flex-direction: column;
+  }
+
   .builder-canvas {
     height: calc(100vh - 120px);
+  }
+
+  .node-config-panel {
+    width: 100%;
+    border-left: none;
+    border-top: 1px solid var(--border-primary);
   }
 
   .templates-grid {
@@ -1014,56 +679,10 @@
   }
 }
 
-/* Google Sheets Node */
-.sheets-node {
-  border-color: #0f9d58;
-  background: #e6f4ea !important;
-}
+/* ============================================
+   UTILITIES
+   ============================================ */
 
-.sheets-icon {
-  background: linear-gradient(135deg, #c8e6c9, #a5d6a7);
-  color: #2e7d32;
-}
-
-/* CSV/Excel Node */
-.csv-excel-node {
-  border-color: #1e88e5;
-  background: #e3f2fd !important;
-}
-
-.csv-excel-icon {
-  background: linear-gradient(135deg, #bbdefb, #90caf9);
-  color: #1565c0;
-}
-/* Email Node */
-.email-node {
-  border-color: #ea4335;
-  background: #fef2f2 !important;
-}
-
-.email-icon {
-  background: linear-gradient(135deg, #fee2e2, #fecaca);
-  color: #dc2626;
-}
-
-/* Slack Node */
-.slack-node {
-  border-color: #4a154b;
-  background: #faf5ff !important;
-}
-
-.slack-icon {
-  background: linear-gradient(135deg, #ede9fe, #ddd6fe);
-  color: #4a154b;
-}
-
-/* SMS Node */
-.sms-node {
-  border-color: #059669;
-  background: #ecfdf5 !important;
-}
-
-.sms-icon {
-  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
-  color: #047857;
-}
+.text-center { text-align: center; }
+.mt-4 { margin-top: 16px; }
+.mb-4 { margin-bottom: 16px; }

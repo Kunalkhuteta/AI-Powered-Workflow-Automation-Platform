@@ -203,10 +203,10 @@ class WorkflowExecutor:
         for parent_id in dependencies:
             parent_node = node_map.get(parent_id)
             
-            if not parent_node or parent_node.type != 'conditional':
+            if not parent_node or parent_node.type not in ['conditional', 'loop']:
                 continue
             
-            # Parent is conditional - check if we should skip
+            # Parent is conditional or loop - check if we should skip
             active_branch = self.active_branches.get(parent_id)
             
             if not active_branch:

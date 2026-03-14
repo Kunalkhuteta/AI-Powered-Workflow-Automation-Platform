@@ -1,5 +1,6 @@
 /**
- * Enhanced WorkflowExecutor - Better UI, Full Logs, Working Canvas
+ * Enhanced WorkflowExecutor - Full Theme Support
+ * Uses CSS classes instead of inline styles for dark/light mode
  */
 
 import React, { useState, useEffect } from 'react';
@@ -8,8 +9,6 @@ import ReactFlow, { Background, Controls, MiniMap } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { apiService } from '../services/api';
 import '../styles/executor.css';
-
-
 
 const WorkflowExecutor = ({ workflowId: propWorkflowId }) => {
   const [searchParams] = useSearchParams();
@@ -31,6 +30,7 @@ const WorkflowExecutor = ({ workflowId: propWorkflowId }) => {
       setLoading(false);
       addLog('error', 'No workflow ID provided');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [workflowId]);
 
   const addLog = (level, message) => {
@@ -58,17 +58,13 @@ const WorkflowExecutor = ({ workflowId: propWorkflowId }) => {
         position: node.data?.position || { x: 100, y: 100 },
         data: {
           label: (
-            <div style={{ padding: '10px' }}>
-              <div style={{ fontWeight: 'bold' }}>{node.type.toUpperCase()}</div>
-              <div style={{ fontSize: '11px', color: '#666' }}>{node.id}</div>
+            <div className="executor-node-label">
+              <div className="executor-node-type">{node.type.toUpperCase()}</div>
+              <div className="executor-node-id">{node.id}</div>
             </div>
           ),
         },
-        style: {
-          background: '#fff',
-          border: '2px solid #ddd',
-          borderRadius: '8px',
-        },
+        className: 'executor-flow-node',
       }));
 
       const flowEdges = (workflowData.edges || []).map((edge, index) => ({
@@ -76,6 +72,7 @@ const WorkflowExecutor = ({ workflowId: propWorkflowId }) => {
         source: edge.source,
         target: edge.target,
         type: 'smoothstep',
+        label: edge.label && edge.label !== 'default' ? edge.label.toUpperCase() : undefined,
       }));
 
       setNodes(flowNodes);
@@ -93,20 +90,9 @@ const WorkflowExecutor = ({ workflowId: propWorkflowId }) => {
     setNodes(prev =>
       prev.map(node => {
         if (node.id === nodeId) {
-          const colors = {
-            idle: { border: '#ddd', bg: '#fff' },
-            running: { border: '#f59e0b', bg: '#fef3c7' },
-            success: { border: '#10b981', bg: '#d1fae5' },
-            error: { border: '#ef4444', bg: '#fee2e2' },
-          };
-          
           return {
             ...node,
-            style: {
-              ...node.style,
-              border: `2px solid ${colors[status].border}`,
-              background: colors[status].bg,
-            },
+            className: `executor-flow-node node-status-${status}`,
           };
         }
         return node;
@@ -149,48 +135,33 @@ const WorkflowExecutor = ({ workflowId: propWorkflowId }) => {
     }
   };
 
-  if (loading) return <div style={{padding: '40px', textAlign: 'center'}}>⏳ Loading...</div>;
-  if (!workflowId) return <div style={{padding: '40px', textAlign: 'center'}}>❌ No workflow ID</div>;
-  if (!workflow) return <div style={{padding: '40px', textAlign: 'center'}}>❌ Failed to load</div>;
+  if (loading) return <div className="executor-loading">⏳ Loading...</div>;
+  if (!workflowId) return <div className="executor-loading">❌ No workflow ID</div>;
+  if (!workflow) return <div className="executor-loading">❌ Failed to load</div>;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-      <div style={{ 
-        padding: '20px', 
-        borderBottom: '2px solid #e5e7eb',
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        background: 'white'
-      }}>
-        <div>
-          <h2 style={{ margin: 0 }}>{workflow.name}</h2>
-          <p style={{ margin: '4px 0 0', color: '#666', fontSize: '14px' }}>{workflow.description}</p>
+    <div className="executor-container">
+      {/* Header */}
+      <div className="executor-header">
+        <div className="executor-header-info">
+          <h2>{workflow.name}</h2>
+          <p>{workflow.description}</p>
         </div>
         <button 
           onClick={executeWorkflow} 
           disabled={isExecuting}
-          style={{
-            padding: '12px 24px',
-            background: isExecuting ? '#9ca3af' : '#10b981',
-            color: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            fontSize: '16px',
-            cursor: isExecuting ? 'not-allowed' : 'pointer',
-            fontWeight: '600'
-          }}
+          className={`executor-run-btn ${isExecuting ? 'executing' : ''}`}
         >
           {isExecuting ? '⏳ Executing...' : '▶️ Run Workflow'}
         </button>
       </div>
 
-      <div style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
-        <div style={{ flex: 1, borderRight: '2px solid #e5e7eb' }}>
-          <h3 style={{ padding: '16px', margin: 0, borderBottom: '1px solid #e5e7eb', background: '#f9fafb' }}>
-            📊 Workflow Graph
-          </h3>
-          <div style={{ height: 'calc(100% - 60px)' }}>
+      {/* Main Content */}
+      <div className="executor-body">
+        {/* Graph Panel */}
+        <div className="executor-graph-panel">
+          <h3 className="executor-panel-title">📊 Workflow Graph</h3>
+          <div className="executor-graph-canvas">
             <ReactFlow
               nodes={nodes}
               edges={edges}
@@ -205,64 +176,38 @@ const WorkflowExecutor = ({ workflowId: propWorkflowId }) => {
           </div>
         </div>
 
-        <div style={{ width: '400px', display: 'flex', flexDirection: 'column' }}>
-          <div style={{ display: 'flex', borderBottom: '2px solid #e5e7eb' }}>
+        {/* Results Panel */}
+        <div className="executor-results-panel">
+          {/* Tab Buttons */}
+          <div className="executor-tabs">
             <button
               onClick={() => setActiveTab('logs')}
-              style={{
-                flex: 1,
-                padding: '12px',
-                border: 'none',
-                background: activeTab === 'logs' ? 'white' : '#f3f4f6',
-                borderBottom: activeTab === 'logs' ? '3px solid #3b82f6' : 'none',
-                cursor: 'pointer',
-                fontWeight: '600'
-              }}
+              className={`executor-tab ${activeTab === 'logs' ? 'active' : ''}`}
             >
               📋 Logs
             </button>
             <button
               onClick={() => setActiveTab('results')}
               disabled={!results}
-              style={{
-                flex: 1,
-                padding: '12px',
-                border: 'none',
-                background: activeTab === 'results' ? 'white' : '#f3f4f6',
-                borderBottom: activeTab === 'results' ? '3px solid #3b82f6' : 'none',
-                cursor: results ? 'pointer' : 'not-allowed',
-                fontWeight: '600',
-                opacity: results ? 1 : 0.5
-              }}
+              className={`executor-tab ${activeTab === 'results' ? 'active' : ''} ${!results ? 'disabled' : ''}`}
             >
               ✅ Results
             </button>
           </div>
 
-          <div style={{ flex: 1, overflow: 'auto', padding: '16px' }}>
+          {/* Tab Content */}
+          <div className="executor-tab-content">
             {activeTab === 'logs' && (
-              <div>
+              <div className="executor-logs">
                 {logs.length === 0 ? (
-                  <p style={{ color: '#666', textAlign: 'center', marginTop: '40px' }}>
+                  <p className="executor-empty-message">
                     No logs yet. Click "Run Workflow" to start.
                   </p>
                 ) : (
                   logs.map((log, i) => (
-                    <div
-                      key={i}
-                      style={{
-                        padding: '8px 12px',
-                        margin: '4px 0',
-                        borderRadius: '6px',
-                        background: 
-                          log.level === 'error' ? '#fee2e2' :
-                          log.level === 'success' ? '#d1fae5' :
-                          '#f3f4f6',
-                        fontSize: '13px'
-                      }}
-                    >
-                      <span style={{ color: '#666', marginRight: '8px' }}>{log.timestamp}</span>
-                      <span>{log.message}</span>
+                    <div key={i} className={`executor-log-entry log-${log.level}`}>
+                      <span className="log-timestamp">{log.timestamp}</span>
+                      <span className="log-message">{log.message}</span>
                     </div>
                   ))
                 )}
@@ -270,30 +215,45 @@ const WorkflowExecutor = ({ workflowId: propWorkflowId }) => {
             )}
             
             {activeTab === 'results' && results && (
-              <div>
-                <div style={{ marginBottom: '20px' }}>
-                  <div style={{ padding: '12px', background: '#f9fafb', borderRadius: '6px', marginBottom: '8px' }}>
-                    <strong>Status:</strong> <span style={{ color: '#10b981' }}>{results.status}</span>
+              <div className="executor-results">
+                <div className="executor-result-summary">
+                  <div className="result-stat">
+                    <strong>Status:</strong>
+                    <span className={`result-status status-${results.status}`}>
+                      {results.status}
+                    </span>
                   </div>
-                  <div style={{ padding: '12px', background: '#f9fafb', borderRadius: '6px', marginBottom: '8px' }}>
-                    <strong>Time:</strong> {results.totalExecutionTime?.toFixed(2)}s
+                  <div className="result-stat">
+                    <strong>Time:</strong>
+                    <span>{results.totalExecutionTime?.toFixed(2)}s</span>
                   </div>
-                  <div style={{ padding: '12px', background: '#f9fafb', borderRadius: '6px' }}>
-                    <strong>Nodes:</strong> {results.executionOrder?.length || 0}
+                  <div className="result-stat">
+                    <strong>Nodes:</strong>
+                    <span>{results.executionOrder?.length || 0}</span>
                   </div>
                 </div>
 
                 {results.nodeResults && (
-                  <div>
-                    <h4 style={{ marginBottom: '12px' }}>Node Outputs:</h4>
+                  <div className="executor-node-results">
+                    <h4>Node Outputs:</h4>
                     {Object.entries(results.nodeResults).map(([nodeId, result]) => (
-                      <div key={nodeId} style={{ marginBottom: '16px', border: '1px solid #e5e7eb', borderRadius: '6px', overflow: 'hidden' }}>
-                        <div style={{ padding: '8px 12px', background: '#f9fafb', borderBottom: '1px solid #e5e7eb' }}>
+                      <div key={nodeId} className="executor-node-output">
+                        <div className="node-output-header">
                           <strong>{nodeId}</strong>
+                          <span className={`node-output-status status-${result.status}`}>
+                            {result.status}
+                          </span>
                         </div>
-                        <pre style={{ padding: '12px', margin: 0, fontSize: '12px', overflow: 'auto' }}>
-                          {JSON.stringify(result.output, null, 2)}
-                        </pre>
+                        {result.output && (
+                          <pre className="node-output-data">
+                            {JSON.stringify(result.output, null, 2)}
+                          </pre>
+                        )}
+                        {result.error && (
+                          <div className="node-output-error">
+                            {result.error}
+                          </div>
+                        )}
                       </div>
                     ))}
                   </div>

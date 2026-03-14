@@ -1,6 +1,6 @@
 /**
- * THEME SYSTEM - Nodes Always Light, Canvas Switches
- * Professional colors with proper dark mode
+ * THEME SYSTEM - Complete Design Tokens
+ * Supports both light and dark modes with all needed variables
  */
 
 :root {
@@ -16,21 +16,73 @@
   --primary-800: #3730a3;
   --primary-900: #312e81;
 
-  /* ACCENT & EMOTIONAL COLORS */
+  /* SUCCESS COLORS */
+  --success-50: #ecfdf5;
+  --success-100: #d1fae5;
+  --success-200: #a7f3d0;
+  --success-300: #6ee7b7;
+  --success-400: #34d399;
   --success-500: #10b981;
+  --success-600: #059669;
+  --success-700: #047857;
+
+  /* ERROR COLORS */
+  --error-50: #fef2f2;
+  --error-100: #fee2e2;
+  --error-200: #fecaca;
+  --error-300: #fca5a5;
+  --error-400: #f87171;
   --error-500: #ef4444;
+  --error-600: #dc2626;
+  --error-700: #b91c1c;
+
+  /* WARNING COLORS */
+  --warning-50: #fffbeb;
+  --warning-100: #fef3c7;
+  --warning-200: #fde68a;
+  --warning-300: #fcd34d;
+  --warning-400: #fbbf24;
   --warning-500: #f59e0b;
+  --warning-600: #d97706;
+  --warning-700: #b45309;
+
+  /* INFO COLORS */
+  --info-50: #eff6ff;
+  --info-100: #dbeafe;
+  --info-200: #bfdbfe;
   --info-500: #3b82f6;
+  --info-600: #2563eb;
+  --info-700: #1d4ed8;
+
+  /* PURPLE COLORS */
+  --purple-50: #faf5ff;
+  --purple-100: #f3e8ff;
+  --purple-200: #e9d5ff;
+  --purple-700: #7e22ce;
 
   /* LIGHT MODE - NEUTRALS */
   --bg-primary: #ffffff;
   --bg-secondary: #f8fafc;
   --bg-tertiary: #f1f5f9;
+  --bg-hover: #e2e8f0;
   --text-primary: #0f172a;
   --text-secondary: #475569;
   --text-tertiary: #94a3b8;
   --border-primary: #e2e8f0;
   --border-secondary: #cbd5e1;
+  --border-focus: #818cf8;
+
+  /* NODE-SPECIFIC COLORS - LIGHT */
+  --node-llm-bg: #e0e7ff;
+  --node-llm-text: #4338ca;
+  --node-http-bg: #d1fae5;
+  --node-http-text: #065f46;
+  --node-logger-bg: #f1f5f9;
+  --node-logger-text: #475569;
+  --node-conditional-bg: #fef3c7;
+  --node-conditional-text: #92400e;
+  --node-transform-bg: #f3e8ff;
+  --node-transform-text: #7e22ce;
 
   /* GLASSMORPHISM - LIGHT */
   --glass-bg: rgba(255, 255, 255, 0.7);
@@ -41,6 +93,7 @@
   --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
   --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
   --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.1);
+  --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.12);
   --shadow-premium: 0 20px 50px rgba(0, 0, 0, 0.1);
   --radius-sm: 8px;
   --radius-md: 12px;
@@ -57,15 +110,67 @@
   --bg-primary: #0f172a;
   --bg-secondary: #0b1120;
   --bg-tertiary: #1e293b;
+  --bg-hover: #334155;
   --text-primary: #f8fafc;
   --text-secondary: #cbd5e1;
   --text-tertiary: #94a3b8;
   --border-primary: #1e293b;
   --border-secondary: #334155;
+  --border-focus: #818cf8;
+
+  /* NODE-SPECIFIC COLORS - DARK */
+  --node-llm-bg: rgba(99, 102, 241, 0.15);
+  --node-llm-text: #a5b4fc;
+  --node-http-bg: rgba(16, 185, 129, 0.15);
+  --node-http-text: #6ee7b7;
+  --node-logger-bg: rgba(100, 116, 139, 0.15);
+  --node-logger-text: #cbd5e1;
+  --node-conditional-bg: rgba(245, 158, 11, 0.15);
+  --node-conditional-text: #fcd34d;
+  --node-transform-bg: rgba(168, 85, 247, 0.15);
+  --node-transform-text: #d8b4fe;
+
+  /* DARK SUCCESS */
+  --success-50: rgba(16, 185, 129, 0.1);
+  --success-100: rgba(16, 185, 129, 0.15);
+  --success-200: rgba(16, 185, 129, 0.2);
+  --success-400: #34d399;
+  --success-600: #059669;
+  --success-700: #34d399;
+
+  /* DARK ERROR */
+  --error-50: rgba(239, 68, 68, 0.1);
+  --error-100: rgba(239, 68, 68, 0.15);
+  --error-200: rgba(239, 68, 68, 0.2);
+  --error-400: #f87171;
+  --error-600: #dc2626;
+
+  /* DARK WARNING */
+  --warning-50: rgba(245, 158, 11, 0.1);
+  --warning-100: rgba(245, 158, 11, 0.15);
+  --warning-200: rgba(245, 158, 11, 0.2);
+  --warning-700: #fbbf24;
+
+  /* DARK INFO */
+  --info-50: rgba(59, 130, 246, 0.1);
+  --info-100: rgba(59, 130, 246, 0.15);
+  --info-200: rgba(59, 130, 246, 0.2);
+
+  /* DARK PURPLE */
+  --purple-50: rgba(168, 85, 247, 0.1);
+  --purple-100: rgba(168, 85, 247, 0.15);
+  --purple-200: rgba(168, 85, 247, 0.2);
+  --purple-700: #c084fc;
 
   /* GLASSMORPHISM - DARK */
   --glass-bg: rgba(15, 23, 42, 0.8);
   --glass-border: rgba(255, 255, 255, 0.05);
+
+  /* SHADOWS - DARK */
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.3), 0 2px 4px -1px rgba(0,0,0,0.2);
+  --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.4);
+  --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.5);
 
   --reactflow-bg: #0b1120;
   --reactflow-grid: #1e293b;
