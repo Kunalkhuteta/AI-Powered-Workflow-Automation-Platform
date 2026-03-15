@@ -133,8 +133,8 @@ Before you begin, ensure you have the following installed:
 
 ### 1. Clone the Repository
 ```bash
-git clone https://github.com/yourusername/ai-workflow-automation.git
-cd ai-workflow-automation
+git clone https://github.com/Kunalkhuteta/AI-Powered-Workflow-Automation-Platform.git
+cd AI-Powered-Workflow-Automation-Platform
 ```
 
 ### 2. Install Frontend Dependencies
@@ -299,8 +299,8 @@ http://localhost:3000
 ```
 
 Default credentials (if using seed data):
-- **Email:** admin@example.com
-- **Password:** admin123
+- **Email:** test@example.com
+- **Password:** test123
 
 ---
 
@@ -559,7 +559,7 @@ We welcome contributions! Please follow these steps:
 
 ### 1. Fork the Repository
 ```bash
-git fork https://github.com/yourusername/ai-workflow-automation.git
+git fork https://github.com/Kunalkhuteta/AI-Powered-Workflow-Automation-Platform.git
 ```
 
 ### 2. Create a Feature Branch
@@ -680,7 +680,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ```
 MIT License
 
-Copyright (c) 2024 Your Name
+Copyright (c) 2024 Kunal Khuteta
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -715,10 +715,10 @@ SOFTWARE.
 
 ## 📞 Contact & Support
 
-- **Issues:** [GitHub Issues](https://github.com/yourusername/ai-workflow-automation/issues)
-- **Discussions:** [GitHub Discussions](https://github.com/yourusername/ai-workflow-automation/discussions)
-- **Email:** support@yourapp.com
-- **Discord:** [Join our community](https://discord.gg/yourserver)
+- **Issues:** [GitHub Issues](https://github.com/Kunalkhuteta/AI-Powered-Workflow-Automation-Platform/issues)
+- **Discussions:** [GitHub Discussions](https://github.com/Kunalkhuteta/AI-Powered-Workflow-Automation-Platform/discussions)
+- **Email:** [EMAIL_ADDRESS]
+- **Discord:** [Join our community]
 
 ---
 
@@ -757,11 +757,11 @@ SOFTWARE.
 
 <div align="center">
 
-**Made with ❤️ by [Your Name](https://github.com/yourusername)**
+**Made with ❤️ by [Kunal Khuteta](https://github.com/Kunalkhuteta)**
 
 ⭐ Star this repo if you find it helpful!
 
-[Demo](https://demo.yourapp.com) • [Documentation](https://docs.yourapp.com) • [Report Bug](https://github.com/yourusername/ai-workflow-automation/issues) • [Request Feature](https://github.com/yourusername/ai-workflow-automation/issues)
+[Demo](https://ai-powered-workflow-automation-plat.vercel.app/) • [Documentation](https://docs.ai-powered-workflow-automation-plat.vercel.app/) • [Report Bug](https://github.com/Kunalkhuteta/AI-Powered-Workflow-Automation-Platform/issues) • [Request Feature](https://github.com/Kunalkhuteta/AI-Powered-Workflow-Automation-Platform/issues)
 
 </div>
 ```
