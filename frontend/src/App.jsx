@@ -1,6 +1,6 @@
 /**
- * App.jsx - ENHANCED UI VERSION
- * Premium design with smooth animations and micro-interactions
+ * App.jsx - ULTRA-PROFESSIONAL VERSION
+ * Minimalist, clean, systematic design
  */
 
 import { useState, useEffect } from "react";
@@ -17,38 +17,34 @@ import "./styles/app.css";
 import "./styles/builder.css";
 import "./styles/executor.css";
 
-// Initialize theme immediately
+// Initialize theme
 const initTheme = localStorage.getItem("theme") || "light";
 document.documentElement.setAttribute("data-theme", initTheme);
 
-// Enhanced Theme Toggle
+// Professional Theme Toggle
 const ThemeToggle = () => {
   const [theme, setTheme] = useState(initTheme);
-  const [isAnimating, setIsAnimating] = useState(false);
 
   const toggleTheme = () => {
-    setIsAnimating(true);
     const newTheme = theme === "light" ? "dark" : "light";
     setTheme(newTheme);
     document.documentElement.setAttribute("data-theme", newTheme);
     localStorage.setItem("theme", newTheme);
-    
-    setTimeout(() => setIsAnimating(false), 500);
   };
 
   return (
     <button
       onClick={toggleTheme}
-      className={`theme-toggle-btn ${isAnimating ? 'animating' : ''}`}
+      className="theme-toggle-btn"
       title={`Switch to ${theme === "light" ? "dark" : "light"} mode`}
       aria-label="Toggle theme"
     >
       {theme === "light" ? (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
         </svg>
       ) : (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <circle cx="12" cy="12" r="5" />
           <line x1="12" y1="1" x2="12" y2="3" />
           <line x1="12" y1="21" x2="12" y2="23" />
@@ -64,7 +60,7 @@ const ThemeToggle = () => {
   );
 };
 
-// Enhanced Auth Component
+// Professional Auth Component
 const AuthScreen = ({ onLogin }) => {
   const [mode, setMode] = useState("login");
   const [name, setName] = useState("");
@@ -87,7 +83,7 @@ const AuthScreen = ({ onLogin }) => {
         setTimeout(() => onLogin(), 800);
       } else {
         await apiService.register(name, email, password);
-        setSuccess("Account created! Logging you in...");
+        setSuccess("Account created successfully!");
         setTimeout(() => onLogin(), 1200);
       }
     } catch (err) {
@@ -116,13 +112,12 @@ const AuthScreen = ({ onLogin }) => {
       <div className="login-background">
         <div className="gradient-orb orb-1"></div>
         <div className="gradient-orb orb-2"></div>
-        <div className="gradient-orb orb-3"></div>
       </div>
 
       <div className="login-card">
         <div className="login-header">
           <div className="login-logo">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M12 2L2 7l10 5 10-5-10-5z" />
               <path d="M2 17l10 5 10-5" />
               <path d="M2 12l10 5 10-5" />
@@ -131,13 +126,12 @@ const AuthScreen = ({ onLogin }) => {
           <h1>{mode === "login" ? "Welcome Back" : "Create Account"}</h1>
           <p>
             {mode === "login"
-              ? "Sign in to your workflow platform"
-              : "Join the workflow automation platform"}
+              ? "Sign in to continue to your workspace"
+              : "Get started with your new account"}
           </p>
         </div>
 
         <div className="auth-toggle">
-          <div className={`auth-toggle-indicator ${mode === "register" ? "right" : ""}`}></div>
           <button
             type="button"
             className={`auth-toggle-btn ${mode === "login" ? "active" : ""}`}
@@ -155,164 +149,128 @@ const AuthScreen = ({ onLogin }) => {
         </div>
 
         <form onSubmit={handleSubmit} className="login-form">
-  {error && (
-    <div className="login-error">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <circle cx="12" cy="12" r="10" />
-        <line x1="12" y1="8" x2="12" y2="12" />
-        <line x1="12" y1="16" x2="12.01" y2="16" />
-      </svg>
-      {error}
-    </div>
-  )}
+          {error && (
+            <div className="login-error">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+              <span>{error}</span>
+            </div>
+          )}
 
-  {success && (
-    <div className="login-success">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-        <polyline points="22 4 12 14.01 9 11.01" />
-      </svg>
-      {success}
-    </div>
-  )}
+          {success && (
+            <div className="login-success">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                <polyline points="22 4 12 14.01 9 11.01" />
+              </svg>
+              <span>{success}</span>
+            </div>
+          )}
 
-  {mode === "register" && (
-    <div className="form-group" style={{ animation: "fadeIn 0.4s ease-out" }}>
-      <label htmlFor="name">Full Name</label>
-      <div className="input-wrapper">
-        <svg
-          className="input-icon"
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-        >
-          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-          <circle cx="12" cy="7" r="4" />
-        </svg>
-        <input
-          type="text"
-          id="name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          required={mode === "register"}
-          autoComplete="name"
-        />
-      </div>
-    </div>
-  )}
+          {mode === "register" && (
+            <div className="form-group" style={{ animation: "fadeIn 0.4s ease-out" }}>
+              <label htmlFor="name">Full Name</label>
+              <input
+                type="text"
+                id="name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Enter your full name"
+                required={mode === "register"}
+                autoComplete="name"
+              />
+            </div>
+          )}
 
-  <div className="form-group">
-    <label htmlFor="email">Email</label>
-    <div className="input-wrapper">
-      <svg
-        className="input-icon"
-        width="20"
-        height="20"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-      >
-        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-        <polyline points="22,6 12,13 2,6" />
-      </svg>
-      <input
-        type="email"
-        id="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        required
-        autoComplete="email"
-      />
-    </div>
-  </div>
+          <div className="form-group">
+            <label htmlFor="email">Email Address</label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
+              required
+              autoComplete="email"
+            />
+          </div>
 
-  <div className="form-group">
-    <label htmlFor="password">Password</label>
-    <div className="input-wrapper">
-      <svg
-        className="input-icon"
-        width="20"
-        height="20"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-      >
-        <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
-        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-      </svg>
-      <input
-        type="password"
-        id="password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        required
-        autoComplete={mode === "login" ? "current-password" : "new-password"}
-        minLength={6}
-      />
-    </div>
-  </div>
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter your password"
+              required
+              autoComplete={mode === "login" ? "current-password" : "new-password"}
+              minLength={6}
+            />
+          </div>
 
-  <button type="submit" className="login-button" disabled={isLoading}>
-    {isLoading ? (
-      <>
-        <span className="button-spinner"></span>
-        {mode === "login" ? "Signing in..." : "Creating account..."}
-      </>
-    ) : (
-      <>
-        {mode === "login" ? "Sign In" : "Sign Up"}
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <line x1="5" y1="12" x2="19" y2="12" />
-          <polyline points="12 5 19 12 12 19" />
-        </svg>
-      </>
-    )}
-  </button>
-</form>
+          <button type="submit" className="login-button" disabled={isLoading}>
+            {isLoading ? (
+              <>
+                <span className="button-spinner"></span>
+                {mode === "login" ? "Signing in..." : "Creating account..."}
+              </>
+            ) : (
+              <>
+                {mode === "login" ? "Sign In" : "Create Account"}
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                  <polyline points="12 5 19 12 12 19" />
+                </svg>
+              </>
+            )}
+          </button>
+        </form>
       </div>
 
       <div className="login-features">
         <div className="feature-pill">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <polyline points="20 6 9 17 4 12" />
           </svg>
-          No credit card required
+          Free Forever
         </div>
         <div className="feature-pill">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <polyline points="20 6 9 17 4 12" />
           </svg>
-          Free forever plan
+          No Credit Card
         </div>
         <div className="feature-pill">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
             <polyline points="20 6 9 17 4 12" />
           </svg>
-          Get started in seconds
+          Setup in 30s
         </div>
       </div>
     </div>
   );
 };
 
-// Enhanced Navigation with Active State
+// Professional Navigation
 const Navigation = ({ onLogout }) => {
   const location = useLocation();
 
   const isActive = (path) => {
-    return location.pathname === path || location.pathname.startsWith(path);
+    if (path === "/executor") {
+      return location.pathname === "/executor";
+    }
+    return location.pathname.startsWith(path);
   };
 
   return (
     <nav className="app-nav">
       <div className="nav-brand">
         <div className="nav-logo">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M12 2L2 7l10 5 10-5-10-5z" />
             <path d="M2 17l10 5 10-5" />
             <path d="M2 12l10 5 10-5" />
@@ -321,27 +279,15 @@ const Navigation = ({ onLogout }) => {
         <h2>Workflow Platform</h2>
       </div>
       <div className="nav-links">
-        <Link to="/executor" className={isActive("/executor") ? "active" : ""}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <polygon points="5 3 19 12 5 21 5 3" />
-          </svg>
-          Executor
-        </Link>
         <Link to="/builder" className={isActive("/builder") ? "active" : ""}>
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M12 2L2 7l10 5 10-5-10-5z" />
-            <path d="M2 17l10 5 10-5" />
-            <path d="M2 12l10 5 10-5" />
-          </svg>
           Builder
         </Link>
+        <Link to="/executor" className={isActive("/executor") ? "active" : ""}>
+          Executor
+        </Link>
+        <div className="nav-divider"></div>
         <ThemeToggle />
         <button onClick={onLogout} className="logout-btn">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-            <polyline points="16 17 21 12 16 7" />
-            <line x1="21" y1="12" x2="9" y2="12" />
-          </svg>
           Logout
         </button>
       </div>
@@ -388,12 +334,14 @@ function WorkflowList() {
   if (workflows.length === 0) {
     return (
       <div className="empty-container">
-        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-          <path d="M12 2L2 7l10 5 10-5-10-5z" />
-          <path d="M2 17l10 5 10-5" />
-          <path d="M2 12l10 5 10-5" />
-        </svg>
-        <h2>No workflows found</h2>
+        <div className="empty-icon">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+            <path d="M12 2L2 7l10 5 10-5-10-5z" />
+            <path d="M2 17l10 5 10-5" />
+            <path d="M2 12l10 5 10-5" />
+          </svg>
+        </div>
+        <h2>No workflows yet</h2>
         <p>Create your first workflow to get started with automation</p>
         <Link to="/builder" className="btn btn-primary">
           Create Workflow
@@ -405,7 +353,7 @@ function WorkflowList() {
   return (
     <div className="app">
       <div className="workflow-selector">
-        <label>Select Workflow:</label>
+        <label>Workflow</label>
         <select value={selectedWorkflowId || ""} onChange={(e) => setSelectedWorkflowId(e.target.value)}>
           {workflows.map((wf) => (
             <option key={wf._id} value={wf._id}>
@@ -415,18 +363,10 @@ function WorkflowList() {
         </select>
         <div className="workflow-actions">
           <Link to="/builder" className="btn btn-secondary">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <line x1="12" y1="5" x2="12" y2="19" />
-              <line x1="5" y1="12" x2="19" y2="12" />
-            </svg>
-            Create New
+            New
           </Link>
           {selectedWorkflowId && (
             <Link to={`/builder/${selectedWorkflowId}`} className="btn btn-secondary">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-              </svg>
               Edit
             </Link>
           )}
